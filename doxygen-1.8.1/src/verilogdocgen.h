@@ -128,6 +128,16 @@ static QList<Entry>* getEntryAtLine1(const Entry* ce,int line);
 static void buildGlobalVerilogVariableDict(const FileDef* fileDef,bool clear=FALSE,int level=0);
 static MemberDef* findInstMember(QCString& cl,QCString& inst,QCString& key,bool b);
 
+//===========================================================================================
+// Functions after this point are the verilog-specific parts of the functions from VHDLDocGen
+//===========================================================================================
+static void prepareCommentVerilog( QCString& qcs );
+static QCString getProtectionNameVerilog( int prot );
+static bool writeClassTypeVerilog( ClassDef *& cd, OutputList &ol ,QCString & cname );
+static QCString getProcessNumberVerilog( void );
+static bool isNumberVerilog( const QCString& s );
+static QCString trDesignUnitListDescriptionVerilog( void );
+
 };
 
 // start prefix for each comment 
