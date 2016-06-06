@@ -189,7 +189,7 @@ static void startCodeBlock(QCString qcs,int ii){
         gBlock.name=name;
     gBlock.bodyLine=yyLineNr+1;
     QCString q=strComment;
-   VhdlDocGen::prepareComment(q);
+   VerilogDocGen::prepareCommentVerilog(q);
    gBlock.brief+=q;
    strComment.resize(0);
 }
@@ -211,7 +211,7 @@ static void startCodeBlock(int index){
    strComment=strComment.left(index);
     gBlock.startLine=yyLineNr+1;
     gBlock.bodyLine=yyLineNr+1;
-    VhdlDocGen::prepareComment(strComment);
+    VerilogDocGen::prepareCommentVerilog(strComment);
    gBlock.brief+=strComment;
 }
 static void makeInlineDoc(int endCode)
@@ -292,7 +292,7 @@ static bool checkString(QCString &name)
   if (name.at(0)=='"' && name.at(len-1)=='"' && len > 2)
   {
     QStringList qrl=QStringList::split(regg,name,FALSE);
-    if (VhdlDocGen::isNumber(qrl[0].data()))
+    if (VerilogDocGen::isNumberVerilog(qrl[0].data()))
     {
       g_code->codify("\""); 
       startFontClass("vhdllogic");
@@ -310,7 +310,7 @@ static bool checkString(QCString &name)
     return TRUE;
   }
 
-  if (VhdlDocGen::isNumber(name))
+  if (VerilogDocGen::isNumberVerilog(name))
   {
     startFontClass("vhdllogic");
     g_code->codify(name.data());
@@ -401,7 +401,7 @@ static void writeSpecWord(const char *word,const char* curr_class=0,bool classLi
       else                 
       {
          QCString qc(temp.data());
-         if (VhdlDocGen::isNumber(qc)){
+         if (VerilogDocGen::isNumberVerilog(qc)){
                          startFontClass("vhdllogic");
                          g_code->codify(temp.data());
                          endFontClass();
@@ -1329,7 +1329,7 @@ GATETYPE  	"and"|"nand"|"or"|"nor"|"xor"|"xnor"|"buf"|"bufif0"|"bufif1"|"not"|"n
   { // found one line comment, add it to the entry on this line
     pTemp->briefLine=yyLineNr;
     pTemp->brief+=yytext;
-    VhdlDocGen::prepareComment(pTemp->brief);
+    VerilogDocGen::prepareCommentVerilog(pTemp->brief);
   }
     else 
   */  
@@ -1399,14 +1399,14 @@ GATETYPE  	"and"|"nand"|"or"|"nor"|"xor"|"xnor"|"buf"|"bufif0"|"bufif1"|"not"|"n
    strComment=strComment.left(index);
     gBlock.startLine=yyLineNr+1;
     gBlock.bodyLine=yyLineNr+1;
-    VhdlDocGen::prepareComment(strComment);
+    VerilogDocGen::prepareCommentVerilog(strComment);
    gBlock.brief+=strComment;
    */
   }
   else if(!g_parseCode)
   {
    strComment+=verilogScanYYtext;
-   VhdlDocGen::prepareComment(strComment);
+   VerilogDocGen::prepareCommentVerilog(strComment);
    handleVerilogCommentBlock(strComment,FALSE,iDocLine);
    unput(*verilogScanYYtext);
    }
@@ -1443,7 +1443,7 @@ GATETYPE  	"and"|"nand"|"or"|"nor"|"xor"|"xnor"|"buf"|"bufif0"|"bufif1"|"not"|"n
     }
   else if(!g_parseCode)
   {
-   VhdlDocGen::prepareComment(qcs);
+   VerilogDocGen::prepareCommentVerilog(qcs);
    //printf("--> handleCommentBlock line %d\n",yyLineNr);
  
   if(!checkMultiComment(qcs))
@@ -1467,7 +1467,7 @@ GATETYPE  	"and"|"nand"|"or"|"nor"|"xor"|"xnor"|"buf"|"bufif0"|"bufif1"|"not"|"n
 					  if(b && !g_parseCode){  
                        strComment+=verilogScanYYtext;
                         if (iDocLine==-1) iDocLine=yyLineNr;
-                         VhdlDocGen::prepareComment(strComment);
+                         VerilogDocGen::prepareCommentVerilog(strComment);
                    
                          if(multLineComment){
                           handleVerilogCommentBlock(strComment,FALSE,iDocLine);
