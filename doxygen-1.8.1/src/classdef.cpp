@@ -396,9 +396,9 @@ void ClassDef::internalInsertMember(MemberDef *md,
 	
 if (md->isHidden()) return;
 
-    if(optVerilog)
+    if(optVerilog && getLanguage()==SrcLangExt_VERILOG)
 	  {
-	  QCString tti=VhdlDocGen::trVhdlType(md->getMemberSpecifiers(),false);
+	  QCString tti=VerilogDocGen::convertTypeToString(md->getMemberSpecifiers(),false);
       //  VhdlDocGen::deleteAllChars(tti,' '); // Always Construct
   
         QStringList qsl=this->getList();
@@ -410,9 +410,18 @@ if (md->isHidden()) return;
 
 
 
-  if (getLanguage()==SrcLangExt_VHDL || getLanguage()==SrcLangExt_VERILOG )
+  if (getLanguage()==SrcLangExt_VHDL)
   {
     QCString title=VhdlDocGen::trVhdlType(md->getMemberSpecifiers(),FALSE);
+    if (!m_impl->vhdlSummaryTitles.find(title))
+    {
+      m_impl->vhdlSummaryTitles.append(title,new QCString(title));
+    }
+  }
+
+  if (getLanguage()==SrcLangExt_VERILOG)
+  {
+    QCString title=VerilogDocGen::convertTypeToString(md->getMemberSpecifiers(),FALSE);
     if (!m_impl->vhdlSummaryTitles.find(title))
     {
       m_impl->vhdlSummaryTitles.append(title,new QCString(title));
@@ -1742,7 +1751,7 @@ void ClassDef::writeDeclarationLink(OutputList &ol,bool &found,const char *heade
     ol.startMemberItem(anchor(),FALSE);
     QCString ctype;
 	if(lang==SrcLangExt_VERILOG)
-	   ctype=VhdlDocGen::getProtectionName((VhdlDocGen::VhdlClasses)protection());
+	   ctype=VerilogDocGen::getProtectionNameVerilog((VhdlDocGen::VhdlClasses)protection());
 	else
 		ctype = compoundTypeString();
     QCString cname;
@@ -1779,12 +1788,20 @@ void ClassDef::writeDeclarationLink(OutputList &ol,bool &found,const char *heade
       ol.docify(cname);
       ol.endBold();
     }
-    if (lang==SrcLangExt_VHDL || lang==SrcLangExt_VHDL) // now write the type
+    if (lang==SrcLangExt_VHDL) // now write the type
     {
       ol.writeString(" ");
       ol.insertMemberAlign();
       ol.writeString(VhdlDocGen::getProtectionName((VhdlDocGen::VhdlClasses)protection()));
     }
+    if (lang==SrcLangExt_VHDL) // now write the type
+    {
+      ol.writeString(" ");
+      ol.insertMemberAlign();
+      ol.writeString(VerilogDocGen::getProtectionNameVerilog((VhdlDocGen::VhdlClasses)protection()));
+    }
+
+
     ol.endMemberItem();
 
     // add the brief description if available
@@ -1946,6 +1963,10 @@ void ClassDef::writeDocumentation(OutputList &ol)
   else if (lang==SrcLangExt_VHDL)
   {
     pageTitle = VhdlDocGen::getClassTitle(this)+" Reference";
+  }
+  else if (lang==SrcLangExt_VERILOG)
+  {
+    pageTitle = VerilogDocGen::getClassTitle(this)+" Reference";
   }
   else if (isJavaEnum())
   {
@@ -2264,10 +2285,15 @@ void ClassDef::writeMemberList(OutputList &ol)
         {
           ol.writeString("<span class=\"mlabel\">");
           QStrList sl;
-          if (lang==SrcLangExt_VHDL || lang==SrcLangExt_VERILOG) 
+          if (lang==SrcLangExt_VHDL) 
           {
             sl.append(VhdlDocGen::trVhdlType(md->getMemberSpecifiers())); //append vhdl type
           }
+          else if (lang==SrcLangExt_VERILOG) 
+          {
+            sl.append(VerilogDocGen::convertTypeToString(md->getMemberSpecifiers())); //append verilog type
+          }
+
           else if (md->isFriend()) sl.append("friend");
           else if (md->isRelated()) sl.append("related");
           else
@@ -2275,8 +2301,7 @@ void ClassDef::writeMemberList(OutputList &ol)
             if (Config_getBool("INLINE_INFO") && md->isInline())        
                                        sl.append("inline");
             if (md->isExplicit())      sl.append("explicit");
-            if (md->isMutable())    
-				sl.append("mutable");
+            if (md->isMutable())       sl.append("mutable");
             if (prot==Protected)       sl.append("protected");
             else if (prot==Private)    sl.append("private");
             else if (prot==Package)    sl.append("package");
@@ -4011,9 +4036,13 @@ void ClassDef::writeMemberDeclarations(OutputList &ol,MemberList::ListType lt,co
   if (ml) 
   {
     //printf("%s: ClassDef::writeMemberDeclarations for %s\n",name().data(),ml->listTypeAsString().data());
-    if (getLanguage()==SrcLangExt_VHDL || getLanguage()==SrcLangExt_VERILOG) // use specific declarations function
+    if (getLanguage()==SrcLangExt_VHDL) // use specific declarations function
     {
       VhdlDocGen::writeVhdlDeclarations(ml,ol,0,this,0,0);
+    }
+    if (getLanguage()==SrcLangExt_VERILOG) // use specific declarations function
+    {
+      VerilogDocGen::writeVerilogDeclarations(ml,ol,0,this);
     }
     else // use generic declaration function
     {
