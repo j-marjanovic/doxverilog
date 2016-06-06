@@ -1623,17 +1623,17 @@ MemberList *FileDef::getMemberList(MemberList::ListType lt) const
 void FileDef::writeMemberDeclarations(OutputList &ol,MemberList::ListType lt,const QCString &title)
 {
   static bool optVhdl = Config_getBool("OPTIMIZE_OUTPUT_VHDL");
-      static bool optVerilog = Config_getBool("OPTIMIZE_OUTPUT_VERILOG");
+  static bool optVerilog = Config_getBool("OPTIMIZE_OUTPUT_VERILOG");
 
   MemberList * ml = getMemberList(lt);
   if (ml) 
   {
    if (optVhdl) // use specific declarations function
     {
-        if(optVerilog)
-       VerilogDocGen::writeVerilogDeclarations(ml,ol,0,0,this);
-         else 
-       VhdlDocGen::writeVhdlDeclarations(ml,ol,0,0,this,0);
+      if(optVerilog && getLanguage()==SrcLangExt_VERILOG)
+        VerilogDocGen::writeVerilogDeclarations(ml,ol,0,0,this);
+      else if (getLanguage()==SrcLangExt_VHDL)
+        VhdlDocGen::writeVhdlDeclarations(ml,ol,0,0,this,0);
    }
     else
     {
@@ -1641,6 +1641,7 @@ void FileDef::writeMemberDeclarations(OutputList &ol,MemberList::ListType lt,con
     }
   }
 }
+
 
 void FileDef::writeMemberDocumentation(OutputList &ol,MemberList::ListType lt,const QCString &title)
 {
