@@ -2514,7 +2514,7 @@ if(semi)
 
  if(!parseCode) {
  QCString temp;
- currentFunctionVerilog=VerilogDocGen::makeNewEntry(VhdlDocGen::getProcessNumber().data(),Entry::FUNCTION_SEC,VerilogDocGen::ALWAYS);
+ currentFunctionVerilog=VerilogDocGen::makeNewEntry(VerilogDocGen::getProcessNumberVerilog().data(),Entry::FUNCTION_SEC,VerilogDocGen::ALWAYS);
   currentFunctionVerilog->stat=TRUE;
   currentFunctionVerilog->fileName=getVerilogParsingFile();
   if(!bBody)
