@@ -23,6 +23,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include "verilogdocgen.h"
+#include "vhdldocgen.h"     //TODO: Remove dependences!
 #include "verilogscanner.h"
 #include "membergroup.h"
 #include "vhdldocgen.h"
@@ -1054,3 +1055,107 @@ void VerilogDocGen::writeSource(MemberDef *mdef,OutputList& ol,QCString & cname)
   mdef->writeSourceRefs(ol,cname);
   mdef->writeSourceReffedBy(ol,cname);
 }
+
+//===========================================================================================
+// Functions after this point are the verilog-specific parts of the functions from VHDLDocGen
+//===========================================================================================
+
+void VerilogDocGen::prepareCommentVerilog(QCString& qcs)
+{
+
+  QCString temp;
+
+  const char* s="--!";
+  //const char *start="--!{";
+  //const char *end="--!}";
+
+  s=vlogComment;
+
+  int index=0;
+
+  while (TRUE)
+  {
+    index=qcs.find(s,0,TRUE);
+    if (index<0) break;
+    qcs=qcs.remove(index,strlen(s));
+  }
+  qcs=qcs.stripWhiteSpace();
+}
+
+QCString VerilogDocGen::getProtectionNameVerilog(int prot)
+{
+  if(prot==Public) return "Module";
+    return "Primitive";
+}
+
+/* strips the prefix for package and package body */
+
+bool VerilogDocGen::writeClassTypeVerilog( ClassDef *& cd,
+    OutputList &ol ,QCString & cname)
+{
+  //static ClassDef *prev = 0;
+  //if (prev == cd)  return TRUE;
+  //if (cd != prev) prev=cd;
+
+  QCString qcs;
+
+  if(cd->protection()==Public)
+    qcs+=" Module";
+  else
+    qcs+=" Primitive";
+
+  cname=VhdlDocGen::getClassName(cd);
+  ol.startBold();
+  ol.writeString(qcs.data());
+  ol.writeString(" ");
+  ol.endBold();
+  //ol.insertMemberAlign();
+  return FALSE;
+}// writeClassLink
+
+QCString VerilogDocGen::trDesignUnitListDescriptionVerilog()
+{
+  return "Here is a list of all design unit members with links to "
+         "the Modules they belong to:";
+}
+
+/*!
+ * returns the next number of an anonymous process
+ */
+
+QCString VerilogDocGen::getProcessNumberVerilog()
+{
+  static int stringCounter;
+  QCString qcs;
+  char buf[8];
+  qcs="ALWAYS_";
+
+  sprintf(buf,"%d",stringCounter++);
+  qcs.append(&buf[0]);
+  return qcs;
+}
+
+
+/*!
+ * returns TRUE if this string is a number
+ */
+
+bool VerilogDocGen::isNumberVerilog(const QCString& s)
+{
+  static QRegExp regg("[0-9][0-9eEfFbBcCdDaA_.#-+?xXzZ]*");
+  static QRegExp reggVerilog("[0-9]+[']*[0-9a-fA-FhHoOxXzZ._?]*");
+  static QRegExp reggVerilog1("['][0-9a-fA-FhHoOxXzZ._?]+");
+  static bool optVerilog=Config_getBool("OPTIMIZE_OUTPUT_VERILOG");
+
+  if (s.isEmpty()) return FALSE;
+  int j,len;
+
+  QCString t=s;
+  VhdlDocGen::deleteAllChars(t,' ');
+  j = reggVerilog.match(t.data(),0,&len);
+  if ((j==0) && (len==(int)t.length())) return true; 
+  j = reggVerilog1.match(t.data(),0,&len);
+  if ((j==0) && (len==(int)t.length())) return true;
+  return false;
+
+}// isNumberVerilog
