@@ -20,6 +20,7 @@
 #include "message.h"
 #include "language.h"
 #include "vhdldocgen.h"
+#include "verilogdocgen.h"
 #include "util.h"
 #include "doxygen.h"
 
@@ -245,7 +246,8 @@ class LayoutParser : public QXmlDefaultHandler
       m_rootNav = 0;
 
       bool fortranOpt = Config_getBool("OPTIMIZE_FOR_FORTRAN");
-      bool vhdlOpt    = Config_getBool("OPTIMIZE_OUTPUT_VHDL");  
+      bool vhdlOpt    = Config_getBool("OPTIMIZE_OUTPUT_VHDL");
+      bool verilogOpt = Config_getBool("OPTIMIZE_OUTPUT_VERILOG");
       bool javaOpt    = Config_getBool("OPTIMIZE_OUTPUT_JAVA");
 
       // start & end handlers
@@ -291,6 +293,7 @@ class LayoutParser : public QXmlDefaultHandler
       m_sHandler.insert("class/memberdecl/nestedclasses", 
           new StartElementHandlerSection(this,LayoutDocEntry::ClassNestedClasses,&LayoutParser::startSectionEntry,
                                          vhdlOpt ? VhdlDocGen::trVhdlType(VhdlDocGen::ENTITY,FALSE) :
+                                         verilogOpt ? VerilogDocGen::convertTypeToString(VhdlDocGen::ENTITY,FALSE) :
                                          fortranOpt ? theTranslator->trDataTypes() :
                                          theTranslator->trCompounds() 
                                          ));
@@ -442,6 +445,7 @@ class LayoutParser : public QXmlDefaultHandler
       m_sHandler.insert("namespace/memberdecl/classes", 
           new StartElementHandlerSection(this,LayoutDocEntry::NamespaceClasses,&LayoutParser::startSectionEntry,
                                          vhdlOpt ? VhdlDocGen::trVhdlType(VhdlDocGen::ENTITY,FALSE) :
+                                         verilogOpt ? VerilogDocGen::convertTypeToString(VhdlDocGen::ENTITY,FALSE) :
                                          fortranOpt ? theTranslator->trDataTypes() :
                                          theTranslator->trCompounds() 
                                          ));
@@ -516,6 +520,7 @@ class LayoutParser : public QXmlDefaultHandler
       m_sHandler.insert("file/memberdecl/classes", 
           new StartElementHandlerSection(this,LayoutDocEntry::FileClasses,&LayoutParser::startSectionEntry,
                                          vhdlOpt ? VhdlDocGen::trVhdlType(VhdlDocGen::ENTITY,FALSE) :
+                                         verilogOpt ? VerilogDocGen::convertTypeToString(VhdlDocGen::ENTITY,FALSE) :
                                          fortranOpt ? theTranslator->trDataTypes() :
                                          theTranslator->trCompounds() 
                                          ));
@@ -594,6 +599,7 @@ class LayoutParser : public QXmlDefaultHandler
       m_sHandler.insert("group/memberdecl/classes", 
           new StartElementHandlerSection(this,LayoutDocEntry::GroupClasses,&LayoutParser::startSectionEntry,
                                          vhdlOpt ? VhdlDocGen::trVhdlType(VhdlDocGen::ENTITY,FALSE) :
+                                         verilogOpt ? VerilogDocGen::convertTypeToString(VhdlDocGen::ENTITY,FALSE) :
                                          fortranOpt ? theTranslator->trDataTypes() :
                                          theTranslator->trCompounds() 
                                          ));
@@ -825,7 +831,8 @@ class LayoutParser : public QXmlDefaultHandler
     {
       static bool javaOpt    = Config_getBool("OPTIMIZE_OUTPUT_JAVA");
       static bool fortranOpt = Config_getBool("OPTIMIZE_FOR_FORTRAN");
-      static bool vhdlOpt    = Config_getBool("OPTIMIZE_OUTPUT_VHDL");  
+      static bool vhdlOpt    = Config_getBool("OPTIMIZE_OUTPUT_VHDL");
+      static bool verilogOpt = Config_getBool("OPTIMIZE_OUTPUT_VERILOG");
       static bool hasGraphicalHierarchy = Config_getBool("HAVE_DOT") &&
                                           Config_getBool("GRAPHICAL_HIERARCHY");
       static bool extractAll = Config_getBool("EXTRACT_ALL");
@@ -892,14 +899,23 @@ class LayoutParser : public QXmlDefaultHandler
           LayoutNavEntry::Classes,
           fortranOpt ? theTranslator->trCompoundListFortran() : vhdlOpt ? VhdlDocGen::trDesignUnitList() : theTranslator->trClasses(),
           theTranslator->trCompoundList(),
-          fortranOpt ? theTranslator->trCompoundListDescriptionFortran() : vhdlOpt ? VhdlDocGen::trDesignUnitListDescription() : theTranslator->trCompoundListDescription(),
+          fortranOpt ? theTranslator->trCompoundListDescriptionFortran() : 
+          vhdlOpt ? VhdlDocGen::trDesignUnitListDescription() : 
+          verilogOpt ? VerilogDocGen::trDesignUnitListDescriptionVerilog() : 
+          theTranslator->trCompoundListDescription(),
           "annotated"
         },
         { "classlist",
           LayoutNavEntry::ClassList,
-          fortranOpt ? theTranslator->trCompoundListFortran() : vhdlOpt ? VhdlDocGen::trDesignUnitList() : theTranslator->trCompoundList(),
+          fortranOpt ? theTranslator->trCompoundListFortran() :
+          vhdlOpt ? VhdlDocGen::trDesignUnitList() :
+          verilogOpt ? VerilogDocGen::trDesignUnitListDescriptionVerilog() :
+          theTranslator->trCompoundList(),
           QCString(),
-          fortranOpt ? theTranslator->trCompoundListDescriptionFortran() : vhdlOpt ? VhdlDocGen::trDesignUnitListDescription() : theTranslator->trCompoundListDescription(),
+          fortranOpt ? theTranslator->trCompoundListDescriptionFortran() :
+          vhdlOpt ? VhdlDocGen::trDesignUnitListDescription() :
+          verilogOpt ? VerilogDocGen::trDesignUnitListDescriptionVerilog() :
+          theTranslator->trCompoundListDescription(),
           "annotated"
         },
         { "hierarchy",
