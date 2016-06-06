@@ -1813,11 +1813,16 @@ void MemberDef::_getLabels(QStrList &sl,Definition *container) const
     //ol.startTypewriter();
     //ol.docify(" [");
     SrcLangExt lang = getLanguage();
-    bool optVhdl = (lang==SrcLangExt_VHDL || lang==SrcLangExt_VERILOG); 
-    if (optVhdl)
+
+    if (lang==SrcLangExt_VHDL)
     {
       sl.append(VhdlDocGen::trTypeString(getMemberSpecifiers()));
     }
+    else if (lang==SrcLangExt_VERILOG)
+    {
+      sl.append(VerilogDocGen::convertTypeToString(getMemberSpecifiers()));
+    }
+
     else
     {
       if (isFriend()) sl.append("friend");
