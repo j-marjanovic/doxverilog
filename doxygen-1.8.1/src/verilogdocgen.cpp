@@ -111,72 +111,63 @@ QCString VerilogDocGen::convertTypeToString(int type,bool sing)
 {
   uint ttype=(uint)type;
   switch(type){
-  case(VerilogDocGen::MODULE) :
-   if(sing)return "Module";
-  return "Modules"; 
-  case( VerilogDocGen::FUNCTION): 
-  if(sing)return "Function";
-  return "Functions";
- case( VerilogDocGen::TASK): 
-  if(sing)return "Task";
-  return "Tasks";
-  case(VerilogDocGen::PRIMITIVE):
-  if(sing)return "Primitive";
-  return "Primitives";
-  case(VerilogDocGen::PARAMETER):  
-  if(sing) return "Parameter";
-  return "Parameters";
-  case(VerilogDocGen::COMPONENT): 
-  if(sing) return "Module Instance";
-  return "Module Instances";
-  case( VerilogDocGen::PORT):
-  if(sing) return "Port";
-  return "Ports";
-  case( VerilogDocGen::ALWAYS): 
-  if(sing) return "Always Construct";
-  else
-  return "Always Constructs";
-  case( VerilogDocGen::INPUT): 
-  if(sing)return "Input";
-  return "Inputs";
-  case( VerilogDocGen::OUTPUT): 
-  if(sing) return "Output";
-  return "Outputs";
-  case( VerilogDocGen::INOUT): 
-  if(sing) return "Inout";
-  return "Inouts";
-   case(VerilogDocGen::FEATURE): 
-   if(sing) return "Define";
-  else
-  return "Defines"; 
-  case( VerilogDocGen::TIME): 
-  return "Time"; 
-  case( VerilogDocGen::INCLUDE): 
-  if(sing) return "Include";
-  return "Includes"; 
-  case(VerilogDocGen::SIGNAL): 
-  if(sing) 
-    return "Signal";
-  return "Signals";  
-  case(VerilogDocGen::LIBRARY): 
-  if(sing) 
-    return "Library";
-  return "Libraries"; 
-  case(VerilogDocGen::CONFIGURATION): 
-  if(sing) 
-    return "Configuration";
-  return "Configurations"; 
- case(VhdlDocGen::UCF_CONST): 
-  if(sing) 
-    return "Constraint";
-  return "Constraints"; 
- case(VhdlDocGen::MISCELLANEOUS): 
-  if(sing) 
-    return "Miscellaneous";
-    return "Miscellaneous"; 
-  
-
-  default: return "";
+    case(VerilogDocGen::MODULE) :
+      if(sing)return "Module";
+      return "Modules"; 
+    case( VerilogDocGen::FUNCTION): 
+      if(sing)return "Function";
+      return "Functions";
+    case( VerilogDocGen::TASK): 
+      if(sing)return "Task";
+      return "Tasks";
+    case(VerilogDocGen::PRIMITIVE):
+      if(sing)return "Primitive";
+      return "Primitives";
+    case(VerilogDocGen::PARAMETER):  
+      if(sing) return "Parameter";
+      return "Parameters";
+    case(VerilogDocGen::COMPONENT): 
+      if(sing) return "Module Instance";
+      return "Module Instances";
+    case( VerilogDocGen::PORT):
+      if(sing) return "Port";
+      return "Ports";
+    case( VerilogDocGen::ALWAYS): 
+      if(sing) return "Always Construct";
+      return "Always Constructs";
+    case( VerilogDocGen::INPUT): 
+      if(sing)return "Input";
+      return "Inputs";
+    case( VerilogDocGen::OUTPUT): 
+      if(sing) return "Output";
+      return "Outputs";
+    case( VerilogDocGen::INOUT): 
+      if(sing) return "Inout";
+      return "Inouts";
+    case(VerilogDocGen::FEATURE): 
+      if(sing) return "Define";
+      return "Defines"; 
+    case( VerilogDocGen::TIME): 
+      return "Time"; 
+    case( VerilogDocGen::INCLUDE): 
+      if(sing) return "Include";
+      return "Includes"; 
+    case(VerilogDocGen::SIGNAL): 
+      if(sing) return "Signal";  
+      return "Signals";  
+    case(VerilogDocGen::LIBRARY): 
+      if(sing) return "Library";
+      return "Libraries"; 
+    case(VerilogDocGen::CONFIGURATION): 
+      if(sing) return "Configuration";
+      return "Configurations"; 
+    case(VhdlDocGen::UCF_CONST): 
+      if(sing) return "Constraint";
+      return "Constraints"; 
+    case(VhdlDocGen::MISCELLANEOUS): 
+      if(sing) return "Miscellaneous";
+      return "Miscellaneous"; 
+    default: return "";
   }
   return "";
  
