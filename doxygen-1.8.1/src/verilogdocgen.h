@@ -1,6 +1,6 @@
 
 /******************************************************************************
-* Copyright (c) M.Kreis,2009 
+* Copyright (c) M.Kreis,2009
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation; either version 2 of the License, or
@@ -28,125 +28,122 @@
 #include "vhdlscanner.h"
 
 // wrapper class for the parser
-class MyParserConv  
+class MyParserConv
 {
-  
- public:
-  uint iFileSize; 
 
-  ~MyParserConv(){}
-  MyParserConv(){}
-  
- int parse(MyParserConv*);
- int doLex();
- 
- 
+  public:
+    uint iFileSize;
+
+    ~MyParserConv(){}
+    MyParserConv(){}
+
+    int parse(MyParserConv*);
+    int doLex();
 };
 
 
-class VerilogDocGen  
+class VerilogDocGen
 {
-public:
+  public:
 
- // enum VerilogClasses {ENTITYCLASS,PACKBODYCLASS,ARCHITECTURECLASS,PACKAGECLASS};
- 	
-  enum States {STATE_FUNCTION=0x100,STATE_MODULE,STATE_UDP,STATE_TASK,STATE_GENERATE};
- 
-  
-	enum VerilogKeyWords
-	{
-	  MODULE=0x1000,
-	  FUNCTION,  //4097
-	  FEATURE,
-	  PRIMITIVE,
-	  COMPONENT, //4100
-	  PORT,
-       PARAMETER, //4102
-	  ALWAYS,          //4103
-	  TASK,                //4104
-	  OUTPUT,          //4105
-	  INPUT,              //4106
-	   INOUT,             //4107
-	  DEFPARAM,
-	  SPECPARAM,
-	  GENERATE,
-	  INCLUDE,
-	  TIME,
-	  SIGNAL,
-	  LIBRARY,
-	  CONFIGURATION
-	  };
+    // enum VerilogClasses {ENTITYCLASS,PACKBODYCLASS,ARCHITECTURECLASS,PACKAGECLASS};
 
-// functions for  verilog parser ---------------------
+    enum States {STATE_FUNCTION=0x100,STATE_MODULE,STATE_UDP,STATE_TASK,STATE_GENERATE};
 
-static void writeSource(MemberDef *mdef,OutputList& ol,QCString & cname);
-static QCString convertTypeToString(int type,bool sing=true);
+    enum VerilogKeyWords
+    {
+      MODULE=0x1000,
+      FUNCTION,  //4097
+      FEATURE,
+      PRIMITIVE,
+      COMPONENT, //4100
+      PORT,
+      PARAMETER, //4102
+      ALWAYS,          //4103
+      TASK,                //4104
+      OUTPUT,          //4105
+      INPUT,              //4106
+      INOUT,             //4107
+      DEFPARAM,
+      SPECPARAM,
+      GENERATE,
+      INCLUDE,
+      TIME,
+      SIGNAL,
+      LIBRARY,
+      CONFIGURATION
+    };
 
-static void writeVerilogDeclarations(MemberList* ml,OutputList &ol,
-               ClassDef *cd,NamespaceDef *nd,FileDef *fd,GroupDef *gd,
-               const char *title,const char *subtitle,bool showEnumValues,int type);
+  // functions for  verilog parser ---------------------
 
-static void writeVerilogDeclarations(MemberList* ml,OutputList& ol,GroupDef* gd,ClassDef* cd,FileDef* fd=NULL);
+  static void writeSource(MemberDef *mdef,OutputList& ol,QCString & cname);
+  static QCString convertTypeToString(int type,bool sing=true);
 
-static void writePlainVerilogDeclarations(MemberDef* mdef,MemberList* mlist,OutputList &ol,
-               ClassDef *cd,NamespaceDef *nd,FileDef *fd,GroupDef *gd,int specifier);
+  static void writeVerilogDeclarations(MemberList* ml,OutputList &ol,
+              ClassDef *cd,NamespaceDef *nd,FileDef *fd,GroupDef *gd,
+              const char *title,const char *subtitle,bool showEnumValues,int type);
 
-static void writeVerilogDeclarations(MemberDef* mdef,OutputList &ol,
-                   ClassDef *cd,NamespaceDef *nd,FileDef *fd,GroupDef *gd,
-                   bool inGroup);
+  static void writeVerilogDeclarations(MemberList* ml,OutputList& ol,GroupDef* gd,ClassDef* cd,FileDef* fd=NULL);
 
+  static void writePlainVerilogDeclarations(MemberDef* mdef,MemberList* mlist,OutputList &ol,
+              ClassDef *cd,NamespaceDef *nd,FileDef *fd,GroupDef *gd,int specifier);
 
-// insert a new entry
-static Entry* makeNewEntry(char* name=NULL,int sec=0,int spec=0,int line=0,bool add=true);
-
-static MemberDef* findMember(QCString& className, QCString& memName,int type);
-
-static MemberDef* findMemberDef(ClassDef* cd,QCString& key,MemberList::ListType type,
-                                int t,bool def=false);
+  static void writeVerilogDeclarations(MemberDef* mdef,OutputList &ol,
+              ClassDef *cd,NamespaceDef *nd,FileDef *fd,GroupDef *gd,
+              bool inGroup);
 
 
-static void setCurrVerilogClass(QCString&);
+  // insert a new entry
+  static Entry* makeNewEntry(char* name=NULL,int sec=0,int spec=0,int line=0,bool add=true);
 
-// returns the definition which is found in class
-static MemberDef* findDefinition(ClassDef* cd,  QCString& memName);
+  static MemberDef* findMember(QCString& className, QCString& memName,int type);
 
-// return the module/primitve name
-static QCString getClassTitle(const ClassDef*);
+  static MemberDef* findMemberDef(ClassDef* cd,QCString& key,MemberList::ListType type,
+                                  int t,bool def=false);
 
-// returns the color of a keyword if one is found
-static const QCString* findKeyWord(const char*);
 
-static void initEntry(Entry *e);
+  static void setCurrVerilogClass(QCString&);
 
-static QCString getFileNameFromString(const char* fileName);
+  // returns the definition which is found in class
+  static MemberDef* findDefinition(ClassDef* cd,  QCString& memName);
 
-static void adjustMemberName(QCString& nn); 
+  // return the module/primitve name
+  static QCString getClassTitle(const ClassDef*);
 
-// returns the entry found at line
-static Entry* getEntryAtLine(const Entry* ce,int line);
-static QList<Entry>* getEntryAtLine1(const Entry* ce,int line);
-static void buildGlobalVerilogVariableDict(const FileDef* fileDef,bool clear=FALSE,int level=0);
-static MemberDef* findInstMember(QCString& cl,QCString& inst,QCString& key,bool b);
+  // returns the color of a keyword if one is found
+  static const QCString* findKeyWord(const char*);
 
-//===========================================================================================
-// Functions after this point are the verilog-specific parts of the functions from VHDLDocGen
-//===========================================================================================
-static void prepareCommentVerilog( QCString& qcs );
-static QCString getProtectionNameVerilog( int prot );
-static bool writeClassTypeVerilog( ClassDef *& cd, OutputList &ol ,QCString & cname );
-static QCString getProcessNumberVerilog( void );
-static bool isNumberVerilog( const QCString& s );
-static QCString trDesignUnitListDescriptionVerilog( void );
+  static void initEntry(Entry *e);
+
+  static QCString getFileNameFromString(const char* fileName);
+
+  static void adjustMemberName(QCString& nn);
+
+  // returns the entry found at line
+  static Entry* getEntryAtLine(const Entry* ce,int line);
+  static QList<Entry>* getEntryAtLine1(const Entry* ce,int line);
+  static void buildGlobalVerilogVariableDict(const FileDef* fileDef,bool clear=FALSE,int level=0);
+  static MemberDef* findInstMember(QCString& cl,QCString& inst,QCString& key,bool b);
+
+  //===========================================================================================
+  // Functions after this point are the verilog-specific parts of the functions from VHDLDocGen
+  //===========================================================================================
+  static void prepareCommentVerilog( QCString& qcs );
+  static QCString getProtectionNameVerilog( int prot );
+  static bool writeClassTypeVerilog( ClassDef *& cd, OutputList &ol ,QCString & cname );
+  static QCString getProcessNumberVerilog( void );
+  static bool isNumberVerilog( const QCString& s );
+  static QCString trDesignUnitListDescriptionVerilog( void );
 
 };
 
-// start prefix for each comment 
+// start prefix for each comment
 
 //% a one line comment
 
-//% a 
+//% a
 //% multi line
-//% comment 
+//% comment
 static const char* vlogComment="//%";
 
 #endif
