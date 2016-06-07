@@ -385,6 +385,7 @@ void ClassDef::addMembersToMemberGroup()
 }
 
 // adds new member definition to the class
+//TODO: remove repeated getLanguage() calls
 void ClassDef::internalInsertMember(MemberDef *md,
                                     Protection prot,
                                     bool addToAllList
@@ -1476,7 +1477,7 @@ void ClassDef::writeSummaryLinks(OutputList &ol)
   LayoutDocEntry *lde;
   bool first=TRUE;
   
-  if (getLanguage()!=SrcLangExt_VHDL  ||  getLanguage()!=SrcLangExt_VERILOG)
+  if (getLanguage()!=SrcLangExt_VHDL  &&  getLanguage()!=SrcLangExt_VERILOG)
   {
     for (eli.toFirst();(lde=eli.current());++eli)
     {
@@ -1507,6 +1508,7 @@ void ClassDef::writeSummaryLinks(OutputList &ol)
       writeSummaryLink(ol,li.current()->data(),li.current()->data(),first);
     }
   }
+
   if (!first)
   {
     ol.writeString("  </div>\n");
