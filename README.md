@@ -21,4 +21,3 @@ when supplied VHDL files.
 * Look into supporting newer versions of Doxygen
     - http://sndegroot.blogspot.nl/2014/04/doxverilog-has-been-updated.html
     - http://sndegroot.blogspot.com/2011/08/documenting-verilog-ams-using.html
-    - 
