@@ -373,7 +373,7 @@ static bool classHasVisibleChildren(ClassDef *cd)
 {
   BaseClassList *bcl;
 
-  if (cd->getLanguage()==SrcLangExt_VHDL) // reverse baseClass/subClass relation
+  if (cd->getLanguage()==SrcLangExt_VHDL || cd->getLanguage()==SrcLangExt_VERILOG) // reverse baseClass/subClass relation
   {
     if (cd->baseClasses()==0) return FALSE;
     bcl=cd->baseClasses();
@@ -406,13 +406,13 @@ static void writeClassTree(OutputList &ol,BaseClassList *bcl,bool hideSuper,int 
   for ( ; bcli.current() ; ++bcli)
   {
     ClassDef *cd=bcli.current()->classDef;
-    if (cd->getLanguage()==SrcLangExt_VHDL && (VhdlDocGen::VhdlClasses)cd->protection()!=VhdlDocGen::ENTITYCLASS)
+    if ( (cd->getLanguage()==SrcLangExt_VHDL || cd->getLanguage()==SrcLangExt_VERILOG) && (VhdlDocGen::VhdlClasses)cd->protection()!=VhdlDocGen::ENTITYCLASS)
     {
       continue;
     }
 
     bool b;
-    if (cd->getLanguage()==SrcLangExt_VHDL)
+    if (cd->getLanguage()==SrcLangExt_VHDL || cd->getLanguage()==SrcLangExt_VERILOG)
     {
       b=hasVisibleRoot(cd->subClasses());
     }
@@ -439,10 +439,10 @@ static void writeClassTree(OutputList &ol,BaseClassList *bcl,bool hideSuper,int 
       ol.startIndexListItem();
       //printf("Passed...\n");
       bool hasChildren = !cd->visited && !hideSuper && classHasVisibleChildren(cd);
-      //printf("tree4: Has children %s: %d\n",cd->name().data(),hasChildren);
+      printf("tree4: Has children %s: %d\n",cd->name().data(),hasChildren);
       if (cd->isLinkable())
       {
-        //printf("Writing class %s\n",cd->displayName().data());
+        printf("Writing class %s\n",cd->displayName().data());
         ol.startIndexItem(cd->getReference(),cd->getOutputFileBase());
         ol.parseText(cd->displayName());
         ol.endIndexItem(cd->getReference(),cd->getOutputFileBase());
@@ -458,7 +458,7 @@ static void writeClassTree(OutputList &ol,BaseClassList *bcl,bool hideSuper,int 
         }
         if (ftv)
         {
-          if (cd->getLanguage()==SrcLangExt_VHDL)
+          if (cd->getLanguage()==SrcLangExt_VHDL || cd->getLanguage()==SrcLangExt_VERILOG)
           {
             ftv->addContentsItem(hasChildren,bcli.current()->usedName,cd->getReference(),cd->getOutputFileBase(),cd->anchor(),FALSE,FALSE,cd);
           }
@@ -740,7 +740,7 @@ static void writeClassTreeForList(OutputList &ol,ClassSDict *cl,bool &started,FT
     //              cd->isVisibleInHierarchy()
     //      );
     bool b;
-    if (cd->getLanguage()==SrcLangExt_VHDL)
+    if (cd->getLanguage()==SrcLangExt_VHDL || cd->getLanguage()==SrcLangExt_VERILOG)
     {
       if (!(VhdlDocGen::VhdlClasses)cd->protection()==VhdlDocGen::ENTITYCLASS)      
       {
@@ -784,7 +784,7 @@ static void writeClassTreeForList(OutputList &ol,ClassSDict *cl,bool &started,FT
           }
           if (addToIndex)
           {
-            if (cd->getLanguage()!=SrcLangExt_VHDL) // prevents double insertion in Design Unit List
+            if (cd->getLanguage()!=SrcLangExt_VHDL || cd->getLanguage()==SrcLangExt_VERILOG) // prevents double insertion in Design Unit List
             	  Doxygen::indexList.addContentsItem(hasChildren,cd->displayName(),cd->getReference(),cd->getOutputFileBase(),cd->anchor(),FALSE,FALSE);
           }
           if (ftv)
@@ -806,7 +806,7 @@ static void writeClassTreeForList(OutputList &ol,ClassSDict *cl,bool &started,FT
             ftv->addContentsItem(hasChildren,cd->displayName(),0,0,0,FALSE,FALSE,cd); 
           }
         }
-        if (cd->getLanguage()==SrcLangExt_VHDL && hasChildren) 
+        if ((cd->getLanguage()==SrcLangExt_VHDL || cd->getLanguage()==SrcLangExt_VERILOG) && hasChildren) 
         {
           writeClassTree(ol,cd->baseClasses(),cd->visited,1,ftv,addToIndex);
           cd->visited=TRUE;
@@ -1244,7 +1244,7 @@ void writeClassTree(ClassSDict *clDict,FTVHelp *ftv,bool addToIndex,bool globalO
     ClassDef *cd;
     for (;(cd=cli.current());++cli)
     {
-      if (cd->getLanguage()==SrcLangExt_VHDL) 
+      if (cd->getLanguage()==SrcLangExt_VHDL || cd->getLanguage()==SrcLangExt_VERILOG) 
       {
         if ((VhdlDocGen::VhdlClasses)cd->protection()==VhdlDocGen::PACKAGECLASS || 
             (VhdlDocGen::VhdlClasses)cd->protection()==VhdlDocGen::PACKBODYCLASS
@@ -1341,7 +1341,7 @@ static void writeNamespaceTree(NamespaceSDict *nsDict,FTVHelp *ftv,
           count+=classCount;
         }
 
-        if (nd->getLanguage()==SrcLangExt_VHDL)
+        if (nd->getLanguage()==SrcLangExt_VHDL || nd->getLanguage()==SrcLangExt_VERILOG)
         {
           QCString q=nd->getOutputFileBase().replace(0,strlen("namespace"),"class");
           ftv->addContentsItem(count>0,nd->localName(),nd->getReference(),q,0,FALSE,TRUE,nd);
@@ -1354,7 +1354,7 @@ static void writeNamespaceTree(NamespaceSDict *nsDict,FTVHelp *ftv,
 
         if (addToIndex)
         {
-          if (nd->getLanguage()==SrcLangExt_VHDL) // UGLY HACK
+          if (nd->getLanguage()==SrcLangExt_VHDL || nd->getLanguage()==SrcLangExt_VERILOG) // UGLY HACK
           {
             QCString q=nd->getOutputFileBase().replace(0,strlen("namespace"),"class");
             Doxygen::indexList.addContentsItem(count>0,nd->localName(),nd->getReference(),q,QCString(),count>0,showClasses);
@@ -1422,7 +1422,7 @@ static void writeNamespaceIndex(OutputList &ol)
       }
       //ol.writeStartAnnoItem("namespace",nd->getOutputFileBase(),0,nd->name());
       ol.startIndexKey();
-      if (nd->getLanguage()==SrcLangExt_VHDL)
+      if (nd->getLanguage()==SrcLangExt_VHDL || nd->getLanguage()==SrcLangExt_VERILOG)
       {
         ol.writeObjectLink(0, nd->getOutputFileBase().replace(0,strlen("namespace"),"class"),0,nd->displayName());
       }
@@ -1524,7 +1524,7 @@ static void writeAnnotatedClassList(OutputList &ol)
   
   for (cli.toFirst();(cd=cli.current());++cli)
   {
-    if (cd->getLanguage()==SrcLangExt_VHDL && 
+    if ( (cd->getLanguage()==SrcLangExt_VHDL || cd->getLanguage()==SrcLangExt_VERILOG) && 
         ((VhdlDocGen::VhdlClasses)cd->protection()==VhdlDocGen::PACKAGECLASS || 
          (VhdlDocGen::VhdlClasses)cd->protection()==VhdlDocGen::PACKBODYCLASS)
        ) // no architecture
@@ -1542,7 +1542,7 @@ static void writeAnnotatedClassList(OutputList &ol)
     {
       QCString type=cd->compoundTypeString();
       ol.startIndexKey();
-      if (cd->getLanguage()==SrcLangExt_VHDL)
+      if (cd->getLanguage()==SrcLangExt_VHDL || cd->getLanguage()==SrcLangExt_VERILOG)
       {
         QCString prot= VhdlDocGen::getProtectionName((VhdlDocGen::VhdlClasses)cd->protection());
         ol.docify(prot.data());
@@ -1668,7 +1668,7 @@ static void writeAlphabeticalClassList(OutputList &ol)
   {
     if (cd->isLinkableInProject() && cd->templateMaster()==0)
     {
-      if (cd->getLanguage()==SrcLangExt_VHDL && !((VhdlDocGen::VhdlClasses)cd->protection()==VhdlDocGen::ENTITYCLASS ))// no architecture
+      if ((cd->getLanguage()==SrcLangExt_VHDL || cd->getLanguage()==SrcLangExt_VERILOG) && !((VhdlDocGen::VhdlClasses)cd->protection()==VhdlDocGen::ENTITYCLASS ))// no architecture
         continue;
 	     
       int index = getPrefixIndex(cd->className());
@@ -1717,7 +1717,7 @@ static void writeAlphabeticalClassList(OutputList &ol)
   startLetter=0;
   for (cli.toFirst();(cd=cli.current());++cli)
   {
-    if (cd->getLanguage()==SrcLangExt_VHDL && !((VhdlDocGen::VhdlClasses)cd->protection()==VhdlDocGen::ENTITYCLASS ))// no architecture
+    if ((cd->getLanguage()==SrcLangExt_VHDL || cd->getLanguage()==SrcLangExt_VERILOG) && !((VhdlDocGen::VhdlClasses)cd->protection()==VhdlDocGen::ENTITYCLASS ))// no architecture
       continue;
     
     if (cd->isLinkableInProject() && cd->templateMaster()==0)
@@ -1726,7 +1726,7 @@ static void writeAlphabeticalClassList(OutputList &ol)
       startLetter=toupper(cd->className().at(index))&0xFF;
       // Do some sorting again, since the classes are sorted by name with 
       // prefix, which should be ignored really.
-      if (cd->getLanguage()==SrcLangExt_VHDL)
+      if (cd->getLanguage()==SrcLangExt_VHDL || cd->getLanguage()==SrcLangExt_VERILOG)
       {
         if ((VhdlDocGen::VhdlClasses)cd->protection()==VhdlDocGen::ENTITYCLASS )// no architecture
           classesByLetter[startLetter].inSort(cd);
