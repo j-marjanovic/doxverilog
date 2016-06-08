@@ -102,7 +102,6 @@ FileDef::FileDef(const char *p,const char *nm,
   memberGroupSDict = 0;
   acquireFileVersion();
   m_subGrouping=Config_getBool("SUBGROUPING");
-  msg("FileDef()\nFilename: %s\nLanguage: %u\n", nm, lang);
 }
 
 /*! destroy the file definition */
