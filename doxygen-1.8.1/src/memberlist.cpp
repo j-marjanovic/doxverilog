@@ -27,6 +27,7 @@
 #include "groupdef.h"
 #include "marshal.h"
 #include "vhdldocgen.h"
+#include "verilogdocgen.h"
 
 MemberList::MemberList()
 {
@@ -477,6 +478,7 @@ void MemberList::writeDeclarations(OutputList &ol,
 
   //printf("----- writeDeclaration() this=%p ---- inheritedFrom=%p\n",this,inheritedFrom);
   static bool optimizeVhdl = Config_getBool("OPTIMIZE_OUTPUT_VHDL");
+  static bool optimizeVerilog = Config_getBool("OPTIMIZE_OUTPUT_VERILOG");
   QCString inheritId;
 
   countDecMembers(/*showEnumValues*/FALSE,gd); // count members shown in this section
@@ -549,7 +551,19 @@ void MemberList::writeDeclarations(OutputList &ol,
     // 2. This might need to be repeated below for memberGroupLists
     if (optimizeVhdl) // use specific declarations function
     {
-      VhdlDocGen::writeVhdlDeclarations(this,ol,0,cd,0,0);
+
+      SrcLangExt lang = getLanguageFromFileName(fd->name());
+
+      if(optimizeVerilog && lang==SrcLangExt_VERILOG)
+      {
+        msg("MemberList::writeDeclarations(), Verliog: %s\n", title);
+        VerilogDocGen::writeVerilogDeclarations(this,ol,0,cd,0);
+      }
+      else if(lang==SrcLangExt_VHDL)
+      {
+        msg("MemberList::writeDeclarations(), VHDL: %s\n", title);
+        VhdlDocGen::writeVhdlDeclarations(this,ol,0,cd,0,0);
+      }
     }
     else
     {
