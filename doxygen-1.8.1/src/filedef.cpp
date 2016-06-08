@@ -38,6 +38,7 @@
 #include "layout.h"
 #include "entry.h"
 #include "verilogdocgen.h"
+#include "message.h"
 
 //---------------------------------------------------------------------------
 
@@ -101,6 +102,7 @@ FileDef::FileDef(const char *p,const char *nm,
   memberGroupSDict = 0;
   acquireFileVersion();
   m_subGrouping=Config_getBool("SUBGROUPING");
+  msg("FileDef()\nFilename: %s\nLanguage: %u\n", nm, lang);
 }
 
 /*! destroy the file definition */
@@ -1624,17 +1626,22 @@ void FileDef::writeMemberDeclarations(OutputList &ol,MemberList::ListType lt,con
 {
   static bool optVhdl = Config_getBool("OPTIMIZE_OUTPUT_VHDL");
   static bool optVerilog = Config_getBool("OPTIMIZE_OUTPUT_VERILOG");
+  SrcLangExt lang = getLanguageFromFileName(name());
 
   MemberList * ml = getMemberList(lt);
-  if (ml) 
+  if (ml)
   {
-   if (optVhdl) // use specific declarations function
+    if (optVhdl) // use specific declarations function
     {
-      if(optVerilog && getLanguage()==SrcLangExt_VERILOG)
+      if(optVerilog && lang==SrcLangExt_VERILOG)
+      {
         VerilogDocGen::writeVerilogDeclarations(ml,ol,0,0,this);
-      else if (getLanguage()==SrcLangExt_VHDL)
+      }
+      else if (lang==SrcLangExt_VHDL)
+      {
         VhdlDocGen::writeVhdlDeclarations(ml,ol,0,0,this,0);
-   }
+      }
+    }
     else
     {
       ml->writeDeclarations(ol,0,0,this,0,title,0);
