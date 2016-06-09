@@ -1792,7 +1792,7 @@ void ClassDef::writeDeclarationLink(OutputList &ol,bool &found,const char *heade
       ol.insertMemberAlign();
       ol.writeString(VhdlDocGen::getProtectionName((VhdlDocGen::VhdlClasses)protection()));
     }
-    if (lang==SrcLangExt_VHDL) // now write the type
+    else if (lang==SrcLangExt_VERILOG) // now write the type
     {
       ol.writeString(" ");
       ol.insertMemberAlign();
