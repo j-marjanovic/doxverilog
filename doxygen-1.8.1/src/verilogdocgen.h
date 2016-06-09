@@ -46,7 +46,7 @@ class VerilogDocGen
 {
   public:
 
-    // enum VerilogClasses {ENTITYCLASS,PACKBODYCLASS,ARCHITECTURECLASS,PACKAGECLASS};
+
 
     enum States {STATE_FUNCTION=0x100,STATE_MODULE,STATE_UDP,STATE_TASK,STATE_GENERATE};
 
@@ -134,6 +134,7 @@ class VerilogDocGen
   static QCString getProcessNumberVerilog( void );
   static bool isNumberVerilog( const QCString& s );
   static QCString trDesignUnitListDescriptionVerilog( void );
+  static QCString trFunctionAndAlways();
 
 };
 
