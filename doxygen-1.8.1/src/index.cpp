@@ -396,7 +396,7 @@ static bool classHasVisibleChildren(ClassDef *cd)
 }
 
 //----------------------------------------------------------------------------
-/*! Generates HTML Help tree of classes */
+/*! Generates HTML Help tree of classes for hierarchy.html*/
 
 static void writeClassTree(OutputList &ol,BaseClassList *bcl,bool hideSuper,int level,FTVHelp* ftv,bool addToIndex)
 {
@@ -406,7 +406,7 @@ static void writeClassTree(OutputList &ol,BaseClassList *bcl,bool hideSuper,int 
   for ( ; bcli.current() ; ++bcli)
   {
     ClassDef *cd=bcli.current()->classDef;
-    if ( (cd->getLanguage()==SrcLangExt_VHDL || cd->getLanguage()==SrcLangExt_VERILOG) && (VhdlDocGen::VhdlClasses)cd->protection()!=VhdlDocGen::ENTITYCLASS)
+    if ( ( cd->getLanguage()==SrcLangExt_VHDL || cd->getLanguage()==SrcLangExt_VERILOG ) && (VhdlDocGen::VhdlClasses)cd->protection()!=VhdlDocGen::ENTITYCLASS)
     {
       continue;
     }
@@ -439,26 +439,29 @@ static void writeClassTree(OutputList &ol,BaseClassList *bcl,bool hideSuper,int 
       ol.startIndexListItem();
       //printf("Passed...\n");
       bool hasChildren = !cd->visited && !hideSuper && classHasVisibleChildren(cd);
-      printf("tree4: Has children %s: %d\n",cd->name().data(),hasChildren);
+      //printf("tree4: Has children %s: %d\n",cd->name().data(),hasChildren);
       if (cd->isLinkable())
       {
         printf("Writing class %s\n",cd->displayName().data());
         ol.startIndexItem(cd->getReference(),cd->getOutputFileBase());
         ol.parseText(cd->displayName());
         ol.endIndexItem(cd->getReference(),cd->getOutputFileBase());
+
         if (cd->isReference()) 
         { 
           ol.startTypewriter(); 
           ol.docify(" [external]");
           ol.endTypewriter();
         }
+
         if (addToIndex)
         {
           Doxygen::indexList.addContentsItem(hasChildren,cd->displayName(),cd->getReference(),cd->getOutputFileBase(),cd->anchor());
         }
+
         if (ftv)
         {
-          if (cd->getLanguage()==SrcLangExt_VHDL || cd->getLanguage()==SrcLangExt_VERILOG)
+          if (cd->getLanguage()==SrcLangExt_VHDL) // This ONLY applies to VHDL.  Verilog class definition has a blank for usedName for some reason
           {
             ftv->addContentsItem(hasChildren,bcli.current()->usedName,cd->getReference(),cd->getOutputFileBase(),cd->anchor(),FALSE,FALSE,cd);
           }
@@ -482,16 +485,17 @@ static void writeClassTree(OutputList &ol,BaseClassList *bcl,bool hideSuper,int 
           ftv->addContentsItem(hasChildren,cd->displayName(),0,0,0,FALSE,FALSE,cd);
         }
       }
+
       if (hasChildren)
       {
         //printf("Class %s at %p visited=%d\n",cd->name().data(),cd,cd->visited);
         bool wasVisited=cd->visited;
         cd->visited=TRUE;
-        if (cd->getLanguage()==SrcLangExt_VHDL)	
+        if (cd->getLanguage()==SrcLangExt_VHDL || cd->getLanguage()==SrcLangExt_VERILOG)
         {
           writeClassTree(ol,cd->baseClasses(),wasVisited,level+1,ftv,addToIndex);
         }
-        else       
+        else
         {
           writeClassTree(ol,cd->subClasses(),wasVisited,level+1,ftv,addToIndex);
         }
@@ -742,7 +746,7 @@ static void writeClassTreeForList(OutputList &ol,ClassSDict *cl,bool &started,FT
     bool b;
     if (cd->getLanguage()==SrcLangExt_VHDL || cd->getLanguage()==SrcLangExt_VERILOG)
     {
-      if (!(VhdlDocGen::VhdlClasses)cd->protection()==VhdlDocGen::ENTITYCLASS)      
+      if (!(VhdlDocGen::VhdlClasses)cd->protection()==VhdlDocGen::ENTITYCLASS)  //VHDL: Entity, Verilog: Public
       {
         continue;
       }
@@ -1235,7 +1239,7 @@ static int countNamespaces()
 }
 
 //----------------------------------------------------------------------------
-
+// This writes the classes/nested classes view (annotated.html)
 void writeClassTree(ClassSDict *clDict,FTVHelp *ftv,bool addToIndex,bool globalOnly)
 {
   if (clDict)
@@ -1244,8 +1248,9 @@ void writeClassTree(ClassSDict *clDict,FTVHelp *ftv,bool addToIndex,bool globalO
     ClassDef *cd;
     for (;(cd=cli.current());++cli)
     {
-      if (cd->getLanguage()==SrcLangExt_VHDL || cd->getLanguage()==SrcLangExt_VERILOG) 
+      if (cd->getLanguage()==SrcLangExt_VHDL) 
       {
+        //NOTE: Is this check really necesessary?
         if ((VhdlDocGen::VhdlClasses)cd->protection()==VhdlDocGen::PACKAGECLASS || 
             (VhdlDocGen::VhdlClasses)cd->protection()==VhdlDocGen::PACKBODYCLASS
            )// no architecture
@@ -1256,7 +1261,19 @@ void writeClassTree(ClassSDict *clDict,FTVHelp *ftv,bool addToIndex,bool globalO
         {
           QCString n=cd->name();
           cd->setClassName(n.data());
-        }         
+        }
+      }
+
+      // If we have Verilog, only write out name if we have a module
+      else if (cd->getLanguage()==SrcLangExt_VERILOG)
+      {
+        if (cd->protection()==Public)
+        {
+          printf(">writeClassTree for class %s, VERILOG, HAS architecture\n", cd->name());
+          QCString n=cd->name();
+          cd->setClassName(n.data());
+        }
+        printf("!!!writeClassTree for class %s, VERILOG, DROPOUT\n", cd->name());
       }
 
       if (!globalOnly || 
@@ -1542,9 +1559,15 @@ static void writeAnnotatedClassList(OutputList &ol)
     {
       QCString type=cd->compoundTypeString();
       ol.startIndexKey();
-      if (cd->getLanguage()==SrcLangExt_VHDL || cd->getLanguage()==SrcLangExt_VERILOG)
+      if (cd->getLanguage()==SrcLangExt_VHDL)
       {
         QCString prot= VhdlDocGen::getProtectionName((VhdlDocGen::VhdlClasses)cd->protection());
+        ol.docify(prot.data());
+        ol.writeString(" ");
+      }
+      else if (cd->getLanguage()==SrcLangExt_VERILOG)
+      {
+        QString prot= VerilogDocGen::getProtectionNameVerilog((VerilogDocGen::VerilogClasses)cd->protection());
         ol.docify(prot.data());
         ol.writeString(" ");
       }
@@ -1729,11 +1752,11 @@ static void writeAlphabeticalClassList(OutputList &ol)
       if (cd->getLanguage()==SrcLangExt_VHDL || cd->getLanguage()==SrcLangExt_VERILOG)
       {
         if ((VhdlDocGen::VhdlClasses)cd->protection()==VhdlDocGen::ENTITYCLASS )// no architecture
-          classesByLetter[startLetter].inSort(cd);
-      }
-      else
       classesByLetter[startLetter].inSort(cd);
     }
+      else
+      classesByLetter[startLetter].inSort(cd);
+  }
   }
 
   #define NEXT_ROW()                           \
@@ -1945,6 +1968,7 @@ static void writeAnnotatedIndex(OutputList &ol)
 
   if (Config_getBool("OPTIMIZE_OUTPUT_VHDL")) 
   {
+    //TODO: Verilog equivalent?  .ucf and .qsf files are now under the verilog parser (util.cpp: g_lang2extMap), so this may not work correctly.
     VhdlDocGen::findConstraintFile(lne);
   }
   
@@ -2160,9 +2184,14 @@ void addClassMemberNameToIndex(MemberDef *md)
   static bool hideFriendCompounds = Config_getBool("HIDE_FRIEND_COMPOUNDS");
   ClassDef *cd=0;
 
-   if ( md->getLanguage()==SrcLangExt_VERILOG) // &&  (VhdlDocGen::isRecord(md) || VhdlDocGen::isUnit(md)))
+  if ( md->getLanguage()==SrcLangExt_VHDL &&  (VhdlDocGen::isRecord(md) || VhdlDocGen::isUnit(md)))
   {
     VhdlDocGen::adjustRecordMember(md);
+  }
+  else if (md->getLanguage()==SrcLangExt_VERILOG)
+  {
+    QCString name = md->name();
+    VerilogDocGen::adjustMemberName(name);
   }
 
   
@@ -2399,6 +2428,7 @@ static const CmhlInfo *getCmhlInfo(int hl)
 {
   static bool fortranOpt = Config_getBool("OPTIMIZE_FOR_FORTRAN");
   static bool vhdlOpt    = Config_getBool("OPTIMIZE_OUTPUT_VHDL");
+  //TODO: need some way to checking language here - need proper language-specific call to trFunctionAndAlways()
   static CmhlInfo cmhlInfo[] = 
   {
     CmhlInfo("functions",     theTranslator->trAll()),
@@ -2578,6 +2608,7 @@ static const FmhlInfo *getFmhlInfo(int hl)
 {
   static bool fortranOpt = Config_getBool("OPTIMIZE_FOR_FORTRAN");
   static bool vhdlOpt    = Config_getBool("OPTIMIZE_OUTPUT_VHDL");
+  //TODO: need some way to checking language here - need proper language-specific call to trFunctionAndAlways()
   static FmhlInfo fmhlInfo[] = 
   {
     FmhlInfo("globals",     theTranslator->trAll()),
@@ -2748,6 +2779,7 @@ static const NmhlInfo *getNmhlInfo(int hl)
 {
   static bool fortranOpt = Config_getBool("OPTIMIZE_FOR_FORTRAN");
   static bool vhdlOpt    = Config_getBool("OPTIMIZE_OUTPUT_VHDL");
+  //TODO: need some way to checking language here - need proper language-specific call to trFunctionAndAlways()
   static NmhlInfo nmhlInfo[] = 
   {
     NmhlInfo("namespacemembers",     theTranslator->trAll()),
