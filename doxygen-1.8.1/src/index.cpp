@@ -1567,7 +1567,7 @@ static void writeAnnotatedClassList(OutputList &ol)
       }
       else if (cd->getLanguage()==SrcLangExt_VERILOG)
       {
-        QString prot= VerilogDocGen::getProtectionNameVerilog((VerilogDocGen::VerilogClasses)cd->protection());
+        QString prot= VerilogDocGen::getProtectionNameVerilog(cd->protection());
         ol.docify(prot.data());
         ol.writeString(" ");
       }
