@@ -1170,3 +1170,8 @@ bool VerilogDocGen::isNumberVerilog(const QCString& s)
   return false;
 
 }// isNumberVerilog
+
+QCString VerilogDocGen::trFunctionAndAlways()
+{
+  return "Functions/Tasks/Always Construct";
+}
