@@ -442,7 +442,7 @@ static void writeClassTree(OutputList &ol,BaseClassList *bcl,bool hideSuper,int 
       //printf("tree4: Has children %s: %d\n",cd->name().data(),hasChildren);
       if (cd->isLinkable())
       {
-        printf("Writing class %s\n",cd->displayName().data());
+        //printf("Writing class %s\n",cd->displayName().data());
         ol.startIndexItem(cd->getReference(),cd->getOutputFileBase());
         ol.parseText(cd->displayName());
         ol.endIndexItem(cd->getReference(),cd->getOutputFileBase());
@@ -1269,11 +1269,9 @@ void writeClassTree(ClassSDict *clDict,FTVHelp *ftv,bool addToIndex,bool globalO
       {
         if (cd->protection()==Public)
         {
-          printf(">writeClassTree for class %s, VERILOG, HAS architecture\n", cd->name());
           QCString n=cd->name();
           cd->setClassName(n.data());
         }
-        printf("!!!writeClassTree for class %s, VERILOG, DROPOUT\n", cd->name());
       }
 
       if (!globalOnly || 
