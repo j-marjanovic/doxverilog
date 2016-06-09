@@ -6359,9 +6359,9 @@ g_lang2extMap[] =
   { "fortran",     "fortran", SrcLangExt_Fortran  },
   { "vhdl",        "vhdl",    SrcLangExt_VHDL     },
   { "dbusxml",     "dbusxml", SrcLangExt_XML      },
-    { "ucf",        "v",    SrcLangExt_VERILOG   },
-  { "qsf",        "v",    SrcLangExt_VERILOG   },
-  { "v",        "v",    SrcLangExt_VERILOG    },
+  { "ucf",         "v",       SrcLangExt_VERILOG  },
+  { "qsf",         "v",       SrcLangExt_VERILOG  },
+  { "v",           "v",       SrcLangExt_VERILOG  },
   { "tcl",         "tcl",     SrcLangExt_Tcl      },
   { "md",          "md",      SrcLangExt_Markdown },
   { 0,             0,        (SrcLangExt)0        }
@@ -6433,9 +6433,9 @@ void initDefaultExtensionMapping()
   updateLanguageMapping(".qsf",      "vhdl");
   updateLanguageMapping(".md",       "md");
   updateLanguageMapping(".markdown", "md");
-  updateLanguageMapping(".ucf",  "v");
-  updateLanguageMapping(".qsf",  "v");
-  updateLanguageMapping(".v",  "v");
+  updateLanguageMapping(".ucf",      "v");
+  updateLanguageMapping(".qsf",      "v");
+  updateLanguageMapping(".v",        "v");
   //updateLanguageMapping(".xml",   "dbusxml");
 }
 
