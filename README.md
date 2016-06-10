@@ -16,5 +16,6 @@ This was created for two reasons:
 
 ##Future
 * Look into supporting newer versions of Doxygen
+    - 1.8.7 introduces a new VHDL parser, so will likely require big changes.  1.8.6 might be possible with much less work.
     - http://sndegroot.blogspot.nl/2014/04/doxverilog-has-been-updated.html
     - http://sndegroot.blogspot.com/2011/08/documenting-verilog-ams-using.html
