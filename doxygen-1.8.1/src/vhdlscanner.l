@@ -929,24 +929,25 @@ static void handleCommentBlock(const QCString &doc,bool brief)
     current->docLine = iDocLine;
   
 //  printf("parseCommentBlock file<%s>\n [%s]\n",yyFileName.data(),doc.data());
-  while (parseCommentBlock(
-	g_thisParser,
-	current,
-	doc,        // text
-	yyFileName, // file
-	lineNr,     // line of block start
-	brief, 
-	0,
-	FALSE,
-	protection,
-        position,
-        needsEntry
+  while ( parseCommentBlock(
+	        g_thisParser,
+	        current,
+	        doc,        // text
+	        yyFileName, // file
+	        lineNr,     // line of block start
+	        brief, 
+	        0,
+	        FALSE,
+	        protection,
+            position,
+            needsEntry
+          )
         )
-     ) 
   {
- //printf("parseCommentBlock position=%d [%s]\n",position,doc.data()+position);
+    //printf("parseCommentBlock position=%d [%s]\n",position,doc.data()+position);
     if (needsEntry) newVhdlEntry();
   }
+
   if (needsEntry)
   {
     if(varr)
