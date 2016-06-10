@@ -2047,8 +2047,6 @@ void parseModule() {
 
   QCString mod(getVerilogString());
 
-  //printf("parseModule() before deleteAllChars: %s\n", mod);
-
   VhdlDocGen::deleteAllChars(mod,'\n');
   VhdlDocGen::deleteAllChars(mod,' ');
   VhdlDocGen::deleteAllChars(mod,';');
@@ -2058,14 +2056,10 @@ void parseModule() {
 
   int ll=mod.find(reg);
 
-  //printf("parseModule() before regex: %s\n", mod);
-
   if(ll>-1){
     //char c=mod.at(ll);
     QCString val=mod.remove(ll,1);
   }
-
-  printf("parseModule() after regex: %s\n", mod);
 
   //if(mod.len>80)
 
