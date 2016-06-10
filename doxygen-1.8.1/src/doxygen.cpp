@@ -2810,7 +2810,7 @@ nextMember:
 // If found they are stored in their class or in the global list.
 static void buildTypedefList(EntryNav *rootNav)
 {
-  //printf("buildVarList(%s)\n",rootNav->name().data());
+  //printf("buildTypefefList(%s)\n",rootNav->name().data());
   if (!rootNav->name().isEmpty() &&
       rootNav->section()==Entry::VARIABLE_SEC &&
       rootNav->type().find("typedef ")!=-1 // its a typedef
@@ -8821,7 +8821,9 @@ static void parseFiles(Entry *root,EntryNav *rootNav)
     {
       BufStr inBuf(fi.size()+4096);
       msg("Preprocessing %s...\n",s->data());
-      if(Config_getBool("OPTIMIZE_OUTPUT_VERILOG")) 
+
+      // Should have exit for VHDL files
+      if(Config_getBool("OPTIMIZE_OUTPUT_VERILOG") && getLanguageFromFileName(fileName)==SrcLangExt_VERILOG) 
 	 {
 	//   readInputFile(fileName,preBuf);
 	   preprocessVerilogFile(fileName,preBuf,0,-1);
@@ -10386,6 +10388,7 @@ void parseInput()
   // and this calls getResolvedClass we need to process
   // typedefs first so the relations between classes via typedefs
   // are properly resolved. See bug 536385 for an example.
+  // !!!Error exists here
   msg("Searching for documented typedefs...\n");
   buildTypedefList(rootNav);
 
