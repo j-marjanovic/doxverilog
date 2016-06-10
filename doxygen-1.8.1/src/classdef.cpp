@@ -393,45 +393,42 @@ void ClassDef::internalInsertMember(MemberDef *md,
 {
   //printf("insertInternalMember(%s) isHidden()=%d\n",md->name().data(),md->isHidden());
  
-  static bool optVerilog    = Config_getBool("OPTIMIZE_OUTPUT_VHDL");
+  static bool optVerilog    = Config_getBool("OPTIMIZE_OUTPUT_VERILOG");
   
-if (md->isHidden()) return;
+  if (md->isHidden()) return;
 
     if(optVerilog && getLanguage()==SrcLangExt_VERILOG)
     {
     QCString tti=VerilogDocGen::convertTypeToString(md->getMemberSpecifiers(),false);
       //  VhdlDocGen::deleteAllChars(tti,' '); // Always Construct
-  
+
         QStringList qsl=this->getList();
         int i=qsl.findIndex(tti);
         if(i<0)
           this->addListType(tti);
     }
 
-
-
-
-  if (getLanguage()==SrcLangExt_VHDL)
-  {
-    QCString title=VhdlDocGen::trVhdlType(md->getMemberSpecifiers(),FALSE);
-    if (!m_impl->vhdlSummaryTitles.find(title))
+    if (getLanguage()==SrcLangExt_VHDL)
     {
-      m_impl->vhdlSummaryTitles.append(title,new QCString(title));
+      QCString title=VhdlDocGen::trVhdlType(md->getMemberSpecifiers(),FALSE);
+      if (!m_impl->vhdlSummaryTitles.find(title))
+      {
+        m_impl->vhdlSummaryTitles.append(title,new QCString(title));
+      }
     }
-  }
 
-  if (getLanguage()==SrcLangExt_VERILOG)
-  {
-    QCString title=VerilogDocGen::convertTypeToString(md->getMemberSpecifiers(),FALSE);
-    if (!m_impl->vhdlSummaryTitles.find(title))
+    if (getLanguage()==SrcLangExt_VERILOG)
     {
-      m_impl->vhdlSummaryTitles.append(title,new QCString(title));
+      QCString title=VerilogDocGen::convertTypeToString(md->getMemberSpecifiers(),FALSE);
+      if (!m_impl->vhdlSummaryTitles.find(title))
+      {
+        m_impl->vhdlSummaryTitles.append(title,new QCString(title));
+      }
     }
-  }
 
-  if (1 /*!isReference()*/) // changed to 1 for showing members of external
-                            // classes when HAVE_DOT and UML_LOOK are enabled.
-  {
+    if (1 /*!isReference()*/) // changed to 1 for showing members of external
+                              // classes when HAVE_DOT and UML_LOOK are enabled.
+    {
     bool isSimple=FALSE;
 
     /********************************************/
@@ -1714,6 +1711,7 @@ void ClassDef::writeDeclarationLink(OutputList &ol,bool &found,const char *heade
   static bool extractLocalClasses = Config_getBool("EXTRACT_LOCAL_CLASSES");
   bool isLink = isLinkable();
   SrcLangExt lang = getLanguage();
+
   if ( isLink || ( !hideUndocClasses && ( !isLocal() || extractLocalClasses ) ) )
   {
     if (!found) // first class
@@ -1747,11 +1745,13 @@ void ClassDef::writeDeclarationLink(OutputList &ol,bool &found,const char *heade
         << "\">" << convertToXML(name()) << "</class>" << endl;
     }
     ol.startMemberItem(anchor(),FALSE);
+
     QCString ctype;
-  if(lang==SrcLangExt_VERILOG)
-     ctype=VerilogDocGen::getProtectionNameVerilog((VhdlDocGen::VhdlClasses)protection());
-  else
-    ctype = compoundTypeString();
+    if(lang==SrcLangExt_VERILOG)
+      ctype=VerilogDocGen::getProtectionNameVerilog((VhdlDocGen::VhdlClasses)protection());
+    else
+      ctype = compoundTypeString();
+
     QCString cname;
     if (localNames)
     {
