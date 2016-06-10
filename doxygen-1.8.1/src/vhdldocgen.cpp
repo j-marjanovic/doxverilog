@@ -1299,7 +1299,7 @@ void VhdlDocGen::writeFormatString(const QCString& s,OutputList&ol,const MemberD
   QRegExp reg("[\\[\\]\\.\\/\\:\\<\\>\\:\\s\\,\\;\\'\\+\\-\\*\\|\\&\\=\\(\\)\"]");
   QCString qcs = s;
   qcs+=QCString(" ");// parsing the last sign
- const  QCString *ss;
+  const  QCString *ss;
   QCString find=qcs;
   QCString temp=qcs;
   char buf[2];
@@ -1316,7 +1316,7 @@ void VhdlDocGen::writeFormatString(const QCString& s,OutputList&ol,const MemberD
     {
       find=find.left(j);
       buf[0]=temp[j];
-        if(optVerilog && mdef->getLanguage()==SrcLangExt_VERILOG)
+      if(optVerilog && mdef->getLanguage()==SrcLangExt_VERILOG)
         ss=VerilogDocGen::findKeyWord(find);
       else
         ss=VhdlDocGen::findKeyWord(find);
@@ -1375,7 +1375,6 @@ bool VhdlDocGen::isNumber(const QCString& s)
   static QRegExp regg("[0-9][0-9eEfFbBcCdDaA_.#-+?xXzZ]*");
   static QRegExp reggVerilog("[0-9]+[']*[0-9a-fA-FhHoOxXzZ._?]*");
   static QRegExp reggVerilog1("['][0-9a-fA-FhHoOxXzZ._?]+");
-  static bool optVerilog=Config_getBool("OPTIMIZE_OUTPUT_VERILOG");
 
   if (s.isEmpty()) return FALSE;
   int j,len;
@@ -1401,14 +1400,12 @@ void VhdlDocGen::startFonts(const QCString& q, const char *keyword,OutputList& o
 void VhdlDocGen::formatString(const QCString &s, OutputList& ol,const MemberDef* mdef)
 {
 
-	    static bool optVerilog  = Config_getBool("OPTIMIZE_OUTPUT_VERILOG");
+	static bool optVerilog  = Config_getBool("OPTIMIZE_OUTPUT_VERILOG");
 
   if(optVerilog && mdef->getLanguage()==SrcLangExt_VERILOG){
       VhdlDocGen::writeFormatString(s,ol,mdef);
-       return;
+      return;
   }
-
-
 
   QCString qcs = s;
   QCString temp(qcs.length());
