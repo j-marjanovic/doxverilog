@@ -2095,13 +2095,19 @@ void parseModuleInst(QCString& first, QCString& sec) {
   QCString temp=sec;
   //while(sec.stripPrefix(" "));
 
+  /* This screws up module names if the name contains the actual module name, for example:
+   * module: XXX_arbiter
+   * name: arbiter
+   * result: module listed as "XXX_", as "arbiter" is stripped out
+   * WHY does this exist?  -DK
   if(sec!=first && (sec.contains("#")==0))
   {
     //QStringList ql=QStringList::split(first.data(),sec,false);
     int oo=sec.findRev(first.data());
     if(oo>0)
-    sec=sec.left(oo);
+      sec=sec.left(oo);
   }
+  */
   /* XXX this seems to be the source of my misery, but what's it for? -EWA */
   /* else */
   /*   sec=getLastLetter(); */
