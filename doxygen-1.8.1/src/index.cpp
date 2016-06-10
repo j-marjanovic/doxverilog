@@ -461,14 +461,20 @@ static void writeClassTree(OutputList &ol,BaseClassList *bcl,bool hideSuper,int 
 
         if (ftv)
         {
+          /* This results in blank names in the design unit hierarchy in the mixed language case.  Removing it seems to work - WHY?  -DK
+           * The difference:
+           * VHDL-only call takes in:   bcli.current()->usedName
+           * Other call takes in:       bcli.current()->classDef->displayName()
+
           if (cd->getLanguage()==SrcLangExt_VHDL) // This ONLY applies to VHDL.  Verilog class definition has a blank for usedName for some reason
           {
             ftv->addContentsItem(hasChildren,bcli.current()->usedName,cd->getReference(),cd->getOutputFileBase(),cd->anchor(),FALSE,FALSE,cd);
           }
           else
           {
+          */
             ftv->addContentsItem(hasChildren,cd->displayName(),cd->getReference(),cd->getOutputFileBase(),cd->anchor(),FALSE,FALSE,cd);
-          }
+          //}
         }
       }
       else
