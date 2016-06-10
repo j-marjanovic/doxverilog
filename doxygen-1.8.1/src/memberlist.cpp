@@ -556,12 +556,10 @@ void MemberList::writeDeclarations(OutputList &ol,
 
       if(optimizeVerilog && lang==SrcLangExt_VERILOG)
       {
-        msg("MemberList::writeDeclarations(), Verliog: %s\n", title);
         VerilogDocGen::writeVerilogDeclarations(this,ol,0,cd,0);
       }
       else if(lang==SrcLangExt_VHDL)
       {
-        msg("MemberList::writeDeclarations(), VHDL: %s\n", title);
         VhdlDocGen::writeVhdlDeclarations(this,ol,0,cd,0,0);
       }
     }
