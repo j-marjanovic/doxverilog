@@ -8824,15 +8824,15 @@ static void parseFiles(Entry *root,EntryNav *rootNav)
 
       // Should have exit for VHDL files
       if(Config_getBool("OPTIMIZE_OUTPUT_VERILOG") && getLanguageFromFileName(fileName)==SrcLangExt_VERILOG) 
-	 {
-	//   readInputFile(fileName,preBuf);
-	   preprocessVerilogFile(fileName,preBuf,0,-1);
-	 }
-	 else 
-	 {
-      readInputFile(fileName,inBuf);
-      preprocessFile(fileName,inBuf,preBuf);
-     }
+      {
+        //readInputFile(fileName,preBuf);
+        preprocessVerilogFile(fileName,preBuf,0,-1);
+      }
+      else
+      {
+        readInputFile(fileName,inBuf);
+        preprocessFile(fileName,inBuf,preBuf);
+      }
     }
     else // no preprocessing
     {
@@ -10118,14 +10118,14 @@ void parseInput()
       if (!dir.mkdir(outputDirectory))
       {
         err("error: tag OUTPUT_DIRECTORY: Output directory `%s' does not "
-	    "exist and cannot be created\n",outputDirectory.data());
+      "exist and cannot be created\n",outputDirectory.data());
         cleanUpDoxygen();
         exit(1);
       }
       else if (!Config_getBool("QUIET"))
       {
-	err("Notice: Output directory `%s' does not exist. "
-	    "I have created it for you.\n", outputDirectory.data());
+  err("Notice: Output directory `%s' does not exist. "
+      "I have created it for you.\n", outputDirectory.data());
       }
       dir.cd(outputDirectory);
     }
@@ -10552,7 +10552,7 @@ void parseInput()
   addMembersToIndex();
 
    if (Config_getBool("OPTIMIZE_OUTPUT_VHDL") && Config_getBool("HAVE_DOT"))
-	   VhdlDocGen::writeOverview();
+     VhdlDocGen::writeOverview();
 }
 
 void generateOutput()
