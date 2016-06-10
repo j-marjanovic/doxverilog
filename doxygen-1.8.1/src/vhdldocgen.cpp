@@ -105,24 +105,24 @@ static void codify(FTextStream &t,const char *str)
                    break;
         default:   t << c;
                    break;
-	  }
-	}
+    }
+  }
   }
 }
 
 static void createSVG()
 {
- 	QCString ov =Config_getString("HTML_OUTPUT");
+  QCString ov =Config_getString("HTML_OUTPUT");
     QCString dir="-o "+ov+"/overview.svg";
-	ov+="/vhdl_design.dot ";
+  ov+="/vhdl_design.dot ";
 
-	QRegExp ep("[\\s]");
-	QCString vlargs="-Tsvg "+ov+dir ;
+  QRegExp ep("[\\s]");
+  QCString vlargs="-Tsvg "+ov+dir ;
 
-	if (portable_system("dot",vlargs)!=0)
-	{
-	 err("could not create dot file");
-	}
+  if (portable_system("dot",vlargs)!=0)
+  {
+   err("could not create dot file");
+  }
 }
 
 // Creates a svg image. All in/out/inout  ports are shown with  brief description and direction.
@@ -138,8 +138,8 @@ void VhdlDocGen::writeOverview()
 
    if((VhdlDocGen::VhdlClasses)cd->protection()==VhdlDocGen::ENTITYCLASS )
    {
-	found=true;
-	break;
+  found=true;
+  break;
    };
   }
 
@@ -154,7 +154,7 @@ void VhdlDocGen::writeOverview()
    if (!f.open(IO_WriteOnly))
    {
     fprintf(stderr,"Warning: Cannot open file %s for writing\n",fileName.data());
-	return;
+  return;
   }
 
    startDot(t);
@@ -168,29 +168,29 @@ void VhdlDocGen::writeOverview()
    if((VhdlDocGen::VhdlClasses)cd->protection()!=VhdlDocGen::ENTITYCLASS )
     continue;
 
-   	int  index;
+    int  index;
    QList<MemberDef>* port= getPorts(cd,index);
-	if(port==0) continue;
-	if(port->count()==0)
-	{
-	    delete port;
-		port=NULL;
-		continue;
-	}
+  if(port==0) continue;
+  if(port->count()==0)
+  {
+      delete port;
+    port=NULL;
+    continue;
+  }
 
-	startTabel(t,cd->name());
-	writeClassToDot(t,cd);
-	writeTabel(port,index,t);
-	endTabel(t);
+  startTabel(t,cd->name());
+  writeClassToDot(t,cd);
+  writeTabel(port,index,t);
+  endTabel(t);
 
    // writeVhdlPortToolTip(t,port,cd);
-	writeVhdlEntityToolTip(t,cd);
+  writeVhdlEntityToolTip(t,cd);
     delete port;
 
  BaseClassList *bl=cd->baseClasses();
  if(bl)
  {
-	BaseClassListIterator bcli(*bl);
+  BaseClassListIterator bcli(*bl);
     BaseClassDef *bcd;
     for ( ; (bcd=bcli.current()) ; ++bcli )
     {
@@ -199,16 +199,16 @@ void VhdlDocGen::writeOverview()
       dotn+=cd->name();
       QCString csc=bClass->name()+":";
       csc+=bClass->name();
-	//  fprintf(stderr,"\n <%s| %s>",dotn.data(),csc.data());
-	  writeVhdlDotLink(t,dotn,csc,0);
-	}
+  //  fprintf(stderr,"\n <%s| %s>",dotn.data(),csc.data());
+    writeVhdlDotLink(t,dotn,csc,0);
+  }
   }// if bl
  }// for
 
      endDot(t);
     //  writePortLinks(t);
     f.close();
-	createSVG();
+  createSVG();
 
 }
 
@@ -217,35 +217,35 @@ void VhdlDocGen::writeOverview()
 void  VhdlDocGen::writeOverview(OutputList  & ol)
 {
 
-	ol.startFile("vhdl_design_overview.html",0,"overview");
+  ol.startFile("vhdl_design_overview.html",0,"overview");
 
-	ol.startTitle();
-	ol.docify("Design Overview");
-	ol.endTitle();
-	ol.writeRuler();
+  ol.startTitle();
+  ol.docify("Design Overview");
+  ol.endTitle();
+  ol.writeRuler();
 
-	ol.writeString("<embed  src=\"overview.svg\" ");
+  ol.writeString("<embed  src=\"overview.svg\" ");
 
-	// with <img> the links from overview.svg does not work
-	// with<embed  I only get a small window  for large pictures
+  // with <img> the links from overview.svg does not work
+  // with<embed  I only get a small window  for large pictures
 
-	//ol.writeString("<img  src=\"overview.svg\" ");// width=\"844\" height=\"503\" ");
+  //ol.writeString("<img  src=\"overview.svg\" ");// width=\"844\" height=\"503\" ");
 
-	/*
-	QCString num;
-	num=num.setNum(VhdlDocGen::oWidth);
-	ol.writeString(" width=\"");
-	ol.writeString(num.data());
-	ol.writeString("\" height=\"");
-   	num=num.setNum(VhdlDocGen::oHeight);
+  /*
+  QCString num;
+  num=num.setNum(VhdlDocGen::oWidth);
+  ol.writeString(" width=\"");
+  ol.writeString(num.data());
+  ol.writeString("\" height=\"");
+    num=num.setNum(VhdlDocGen::oHeight);
     ol.writeString(num.data());
 
-	ol.writeString("\">");
-	*/
-	ol.writeRuler();
-	//	ol.writeLogo();
-	ol.writeFooter("vhdl_design_overview.html");
-	ol.endFile();
+  ol.writeString("\">");
+  */
+  ol.writeRuler();
+  //  ol.writeLogo();
+  ol.writeFooter("vhdl_design_overview.html");
+  ol.endFile();
 }
 
 
@@ -259,20 +259,20 @@ static void startDot(FTextStream &t)
 
 static void endDot(FTextStream &t)
 {
-	t <<" } \n";
+  t <<" } \n";
 }
 
 static void startTabel(FTextStream &t,QCString className)
 {
-	t <<className <<" [ shape=none , fontname=\"arial\",  fontcolor=\"blue\" , \n";
-	t<< "label=<<TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\">\n";
+  t <<className <<" [ shape=none , fontname=\"arial\",  fontcolor=\"blue\" , \n";
+  t<< "label=<<TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\">\n";
 }
 
 static void writeVhdlDotLink(FTextStream &t,QCString a,QCString b,char* style)
 {
  t<<a<<"->"<<b;
  if(style)
-	 t<<"[style="<<style<<"];\n";
+   t<<"[style="<<style<<"];\n";
  t<< "\n";
 }
 
@@ -290,9 +290,9 @@ static void writeVhdlDotLink(FTextStream &t,QCString a,QCString b,char* style)
   QStringList qsl=QStringList::split(ep,brief);
    for(uint j=0;j<qsl.count();j++)
    {
-	   QCString qcs=qsl[j].data();
+     QCString qcs=qsl[j].data();
         vForm+=parseCommentAsText(cd,NULL,qcs,file,k);
-		k++;
+    k++;
         vForm+='\n';
    }
 
@@ -305,9 +305,9 @@ static void writeVhdlDotLink(FTextStream &t,QCString a,QCString b,char* style)
 static void writeVhdlEntityToolTip(FTextStream& t,ClassDef *cd)
 {
 
-	QCString brief=cd->briefDescription();
+  QCString brief=cd->briefDescription();
 
-	if(brief.isEmpty()) return;
+  if(brief.isEmpty()) return;
 
     brief=formatBriefNote(brief,cd);
 
@@ -326,25 +326,25 @@ static void writeVhdlEntityToolTip(FTextStream& t,ClassDef *cd)
 static void writeColumn(FTextStream &t,MemberDef *md,bool start)
 {
 
-	QCString toolTip;
+  QCString toolTip;
 
-	 static QRegExp reg("[%]");
-	bool bidir=(md!=0 &&( stricmp(md->typeString(),"inout")==0));
+   static QRegExp reg("[%]");
+  bool bidir=(md!=0 &&( stricmp(md->typeString(),"inout")==0));
 
-	 if(md)
-	 {
-	  toolTip=md->briefDescriptionAsTooltip();
-	  if(!toolTip.isEmpty())
-	  {
-	  QCString largs = md->argsString();
-	  if(!largs.isEmpty())
-	  largs=largs.replace(reg," ");
-	  toolTip+=" [";
-	  toolTip+=largs;
+   if(md)
+   {
+    toolTip=md->briefDescriptionAsTooltip();
+    if(!toolTip.isEmpty())
+    {
+    QCString largs = md->argsString();
+    if(!largs.isEmpty())
+    largs=largs.replace(reg," ");
+    toolTip+=" [";
+    toolTip+=largs;
       toolTip+="]";
-	  }
+    }
 
-	 }
+   }
  if(start)
    t<<"<TR>\n";
 
@@ -358,28 +358,28 @@ static void writeColumn(FTextStream &t,MemberDef *md,bool start)
 
   t<<" TOOLTIP=\"";
    if(!toolTip.isEmpty())
-	   codify(t,toolTip.data());
+     codify(t,toolTip.data());
    else{
-	  QCString largs = md->argsString();
-	  if(!largs.isEmpty()){
-	  largs=largs.replace(reg," ");
-	  codify(t,largs.data());
-	  }
+    QCString largs = md->argsString();
+    if(!largs.isEmpty()){
+    largs=largs.replace(reg," ");
+    codify(t,largs.data());
+    }
    }
-	   t<<"\" ";
+     t<<"\" ";
 
   t<<" PORT=\"";
-	   t<<md->name();
+     t<<md->name();
   t<<"\" ";
  }
  if(!toolTip.isEmpty())
  {
-	  //if(!toolTip.isEmpty())
+    //if(!toolTip.isEmpty())
 
  if(bidir)
-	  t<<"BGCOLOR=\"orange\">";
+    t<<"BGCOLOR=\"orange\">";
  else
-	 t<<"BGCOLOR=\"azure\">";
+   t<<"BGCOLOR=\"azure\">";
  }
  else if(bidir)
  t<<"BGCOLOR=\"pink\">";
@@ -399,7 +399,7 @@ t<<" \n";
 
 static void endTabel(FTextStream &t)
 {
-	t <<"</TABLE>>\n";
+  t <<"</TABLE>>\n";
     t << "] \n";
 }
 
@@ -431,10 +431,10 @@ static QList<MemberDef>*  getPorts(ClassDef *cd,int & index)
 
   for (fmni.toFirst();(md=fmni.current());++fmni)
   {
-	  if (md->getMemberSpecifiers()==VhdlDocGen::PORT)
-	  {
-			  portList->append(md);
-		  }
+    if (md->getMemberSpecifiers()==VhdlDocGen::PORT)
+    {
+        portList->append(md);
+      }
 
   }
 
@@ -446,51 +446,51 @@ static QList<MemberDef>*  getPorts(ClassDef *cd,int & index)
 static void writeTabel(QList<MemberDef>* port,int index,  FTextStream & t)
 {
     QCString space(" ");
-	MemberDef *md;
-	uint len=port->count();
+  MemberDef *md;
+  uint len=port->count();
 
-	QList<MemberDef> inPorts;
-	QList<MemberDef> outPorts;
+  QList<MemberDef> inPorts;
+  QList<MemberDef> outPorts;
 
 
-	for(uint j=0;j<len;j++)
-	{
-		md=(MemberDef*)port->at(j);
-	    QCString qc=md->typeString();
-		if(qc=="in")
+  for(uint j=0;j<len;j++)
+  {
+    md=(MemberDef*)port->at(j);
+      QCString qc=md->typeString();
+    if(qc=="in")
           inPorts.append(md);
         else
           outPorts.append(md);
-	}
+  }
 
-	 int inp=inPorts.count();
-	 int outp=outPorts.count();
+   int inp=inPorts.count();
+   int outp=outPorts.count();
 
      int maxLen;
 
-	 if(inp>=outp)
-		maxLen=inp;
-	else
-	   maxLen=outp;
+   if(inp>=outp)
+    maxLen=inp;
+  else
+     maxLen=outp;
 
-	for(int i=0;i<maxLen;i++)
-	{
+  for(int i=0;i<maxLen;i++)
+  {
         //write inports
-		if(i<inp)
-		{
-		md=(MemberDef*)inPorts.at(i);
-		 writeColumn(t,md,true);
-		}
-		else
-		 writeColumn(t,NULL,true);
+    if(i<inp)
+    {
+    md=(MemberDef*)inPorts.at(i);
+     writeColumn(t,md,true);
+    }
+    else
+     writeColumn(t,NULL,true);
 
-		if(i<outp)
-		{
-		  	md=(MemberDef*)outPorts.at(i);
-			writeColumn(t,md,false);
-		}
-		else
-		 writeColumn(t,NULL,false);
+    if(i<outp)
+    {
+        md=(MemberDef*)outPorts.at(i);
+      writeColumn(t,md,false);
+    }
+    else
+     writeColumn(t,NULL,false);
 
     }
 }
@@ -562,7 +562,7 @@ const char* g_vhdlKeyWordMap2[] =
   while (g_vhdlKeyWordMap0[j])
   {
     g_vhdlKeyDict0.insert(g_vhdlKeyWordMap0[j],
-	               new QCString(g_vhdlKeyWordMap0[j]));
+                 new QCString(g_vhdlKeyWordMap0[j]));
     j++;
   }
 
@@ -570,7 +570,7 @@ const char* g_vhdlKeyWordMap2[] =
   while (g_vhdlKeyWordMap1[j])
   {
     g_vhdlKeyDict1.insert(g_vhdlKeyWordMap1[j],
-	               new QCString(g_vhdlKeyWordMap1[j]));
+                 new QCString(g_vhdlKeyWordMap1[j]));
     j++;
   }
 
@@ -578,7 +578,7 @@ const char* g_vhdlKeyWordMap2[] =
   while (g_vhdlKeyWordMap2[j])
   {
     g_vhdlKeyDict2.insert(g_vhdlKeyWordMap2[j],
-	               new QCString(g_vhdlKeyWordMap2[j]));
+                 new QCString(g_vhdlKeyWordMap2[j]));
     j++;
   }
 
@@ -890,7 +890,7 @@ MemberDef* VhdlDocGen::findFunction(const QList<Argument> &ql,
 QCString VhdlDocGen::getClassTitle(const ClassDef *cd)
 {
 
-	
+  
   QCString pageTitle;
   if (cd==0) return "";
   pageTitle+=cd->displayName();
@@ -1400,7 +1400,7 @@ void VhdlDocGen::startFonts(const QCString& q, const char *keyword,OutputList& o
 void VhdlDocGen::formatString(const QCString &s, OutputList& ol,const MemberDef* mdef)
 {
 
-	static bool optVerilog  = Config_getBool("OPTIMIZE_OUTPUT_VERILOG");
+  static bool optVerilog  = Config_getBool("OPTIMIZE_OUTPUT_VERILOG");
 
   if(optVerilog && mdef->getLanguage()==SrcLangExt_VERILOG){
       VhdlDocGen::writeFormatString(s,ol,mdef);
@@ -1638,7 +1638,7 @@ void VhdlDocGen::writeFuncProcDocu(
    static bool optVerilog       = Config_getBool("OPTIMIZE_OUTPUT_VERILOG");
 
 
-	if (al==0) return;
+  if (al==0) return;
   //bool sem=FALSE;
   ol.enableAll();
 
@@ -1693,7 +1693,7 @@ void VhdlDocGen::writeFuncProcDocu(
     if (!VhdlDocGen::isProcess(md))
     {
      // startFonts(arg->type,"vhdlkeyword",ol);
-		VhdlDocGen::writeFormatString(arg->type,ol,md);
+    VhdlDocGen::writeFormatString(arg->type,ol,md);
     }
     ol.disable(OutputGenerator::Man);
     ol.endEmphasis();
@@ -1808,7 +1808,7 @@ static void setGlobalType(MemberList *ml)
 
     if (strcmp(mdd->argsString(),"package")==0)
     {
- 	mdd->setMemberSpecifiers(VhdlDocGen::INSTANTIATION);
+  mdd->setMemberSpecifiers(VhdlDocGen::INSTANTIATION);
     }
     else if (strcmp(mdd->argsString(),"configuration")==0)
     {
@@ -1880,7 +1880,7 @@ void VhdlDocGen::writeVHDLTypeDocumentation(const MemberDef* mdef, const Definit
   {
 
 
-	if (VhdlDocGen::isConstraint(mdef))
+  if (VhdlDocGen::isConstraint(mdef))
     {
       writeLink(mdef,ol);
       ol.docify(" ");
@@ -1899,29 +1899,28 @@ void VhdlDocGen::writeVHDLTypeDocumentation(const MemberDef* mdef, const Definit
       ol.docify(" ");
     }
 
-     if(optVerilog && mdef->getLanguage()==SrcLangExt_VERILOG)
+    if(optVerilog && mdef->getLanguage()==SrcLangExt_VERILOG)
+    {
+      if(mdef->getMemberSpecifiers()==VerilogDocGen::FEATURE)
       {
-       if(mdef->getMemberSpecifiers()==VerilogDocGen::FEATURE)
-   {
-	 QCString arg=mdef->getDefinition();
-	 int kr=arg.find("\\?");
-	 if(kr>=0)
-	 {
-       arg=arg.left(kr-2);
-	   arg.stripPrefix("feature");
-	   arg=arg.simplifyWhiteSpace();
-	   arg.stripPrefix(mdef->name().data());
-	   arg.append("{ . . . }");
-	   VhdlDocGen::formatString(arg,ol,mdef);
-	 }
-
-	 else{
-     QCString ttype=mdef->typeString();
-	 ttype.stripPrefix("feature");
-	 VhdlDocGen::formatString(ttype,ol,mdef);
-	 }
-	 return;
-	  }
+        QCString arg=mdef->getDefinition();
+        int kr=arg.find("\\?");
+        if(kr>=0)
+        {
+          arg=arg.left(kr-2);
+          arg.stripPrefix("feature");
+          arg=arg.simplifyWhiteSpace();
+          arg.stripPrefix(mdef->name().data());
+          arg.append("{ . . . }");
+          VhdlDocGen::formatString(arg,ol,mdef);
+        }
+        else {
+          QCString ttype=mdef->typeString();
+          ttype.stripPrefix("feature");
+          VhdlDocGen::formatString(ttype,ol,mdef);
+        }
+      return;
+      }
     }
     // QCString largs=mdef->argsString();
 
@@ -1934,7 +1933,7 @@ void VhdlDocGen::writeVHDLTypeDocumentation(const MemberDef* mdef, const Definit
     if (c || brec || largs.stripPrefix("units"))
     {
       if (c)
-	  largs=ttype;
+        largs=ttype;
       VhdlDocGen::writeRecUnitDocu(mdef,ol,largs);
       return;
     }
@@ -2131,7 +2130,7 @@ void VhdlDocGen::writeVHDLDeclaration(MemberDef* mdef,OutputList &ol,
       ol.insertMemberAlign();
      if (largs=="context")
      {
-	VhdlDocGen::writeRecorUnit(ltype,ol,mdef);
+  VhdlDocGen::writeRecorUnit(ltype,ol,mdef);
      }
 
      break;
@@ -2240,7 +2239,7 @@ void VhdlDocGen::writeVHDLDeclaration(MemberDef* mdef,OutputList &ol,
       {
         mdef->setName(mdef->name().left(mm));
       }
-	  VhdlDocGen::writeUCFLink(mdef,ol);
+    VhdlDocGen::writeUCFLink(mdef,ol);
       break;
     case VhdlDocGen::SIGNAL:
     case VhdlDocGen::ATTRIBUTE:
@@ -2591,7 +2590,7 @@ QCString VhdlDocGen::trDesignUnitMembers()
 
 QCString VhdlDocGen::trDesignUnitListDescription()
 {
-	return "Here is a list of all design unit members with links to "
+  return "Here is a list of all design unit members with links to "
     "the Entities  they belong to:";
 }
 
@@ -2608,10 +2607,10 @@ QCString VhdlDocGen::trDesignUnits()
 QCString VhdlDocGen::trFunctionAndProc()
 {
 
-	 if(Config_getBool("OPTIMIZE_OUTPUT_VERILOG"))
+   if(Config_getBool("OPTIMIZE_OUTPUT_VERILOG"))
    return "Functions/Tasks/Always Construct";
 
-	return "Functions/Procedures/Processes";
+  return "Functions/Procedures/Processes";
 }
 
 
@@ -2676,8 +2675,8 @@ void VhdlDocGen::writeStringLink(const MemberDef *mdef,QCString mem, OutputList&
 void VhdlDocGen::writeCodeFragment( MemberDef *mdef,OutputList& ol)
 {
   //  Definition d=(Definition)mdef;
-  //	QCString fdd=mdef->getDefFileExtension();
-  //	QCString scope=mdef->getScopeString();
+  //  QCString fdd=mdef->getDefFileExtension();
+  //  QCString scope=mdef->getScopeString();
   QCString codeFragment=mdef->documentation();
   //FileDef *fd=mdef->getFileDef();
 
@@ -2721,7 +2720,7 @@ void VhdlDocGen::writeSource(MemberDef *mdef,OutputList& ol,QCString & cname)
     ol.insertMemberAlign();
     QCString q=qsl[j].utf8();
     VhdlDocGen::writeFormatString(q,ol,mdef);
-	ol.lineBreak();
+  ol.lineBreak();
   }
   ol.endCodeFragment();
 
@@ -2916,8 +2915,8 @@ bool VhdlDocGen::findConstraintFile(LayoutNavEntry *lne)
  if(Config_getBool("HAVE_DOT"))
   {
      QCString ov("Design Overview");
-	 QCString ofile("vhdl_design_overview");
-	 LayoutNavEntry *oo=new LayoutNavEntry( lne,LayoutNavEntry::MainPage,true,ofile,ov,"");
+   QCString ofile("vhdl_design_overview");
+   LayoutNavEntry *oo=new LayoutNavEntry( lne,LayoutNavEntry::MainPage,true,ofile,ov,"");
      kk->addChild(oo);
   }
 
@@ -2940,7 +2939,7 @@ void VhdlDocGen::writeAlphbeticalClass(OutputList& ol,const ClassDef* cd,const Q
 {
   if (cname.contains("::")==0)
   {
-    ClassDef*oo=	VhdlDocGen::findArchitecture(cd);
+    ClassDef*oo=  VhdlDocGen::findArchitecture(cd);
     ol.writeObjectLink(cd->getReference(),
         cd->getOutputFileBase(),0,cname);
     if (oo)
@@ -3092,7 +3091,7 @@ void assignBinding(ConfNode * conf,QCString label)
         arch1=ent1+"::"+arch1;
         //ClassDef *archBind=Doxygen::classSDict->find(arch1.data());
         ClassDef *ent=Doxygen::classSDict->find(ent1.data());
-        QCString	  inst=VhdlDocGen::getIndexWord(cur->args.data(),0);
+        QCString    inst=VhdlDocGen::getIndexWord(cur->args.data(),0);
         ClassDef *cd=Doxygen::classSDict->find(inst.data());
 
         if (cd==0 || ent==0)
