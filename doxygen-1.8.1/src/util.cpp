@@ -6362,6 +6362,7 @@ g_lang2extMap[] =
   { "ucf",         "v",       SrcLangExt_VERILOG  },
   { "qsf",         "v",       SrcLangExt_VERILOG  },
   { "v",           "v",       SrcLangExt_VERILOG  },
+  { "sv",          "v",       SrcLangExt_VERILOG  },
   { "tcl",         "tcl",     SrcLangExt_Tcl      },
   { "md",          "md",      SrcLangExt_Markdown },
   { 0,             0,        (SrcLangExt)0        }
@@ -6436,6 +6437,7 @@ void initDefaultExtensionMapping()
   updateLanguageMapping(".ucf",      "v");
   updateLanguageMapping(".qsf",      "v");
   updateLanguageMapping(".v",        "v");
+  updateLanguageMapping(".sv",       "sv");
   //updateLanguageMapping(".xml",   "dbusxml");
 }
 
