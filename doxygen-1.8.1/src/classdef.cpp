@@ -1442,6 +1442,7 @@ void ClassDef::endMemberDeclarations(OutputList &ol)
 {
   //printf("%s: ClassDef::endMemberDeclarations()\n",name().data());
   static bool inlineInheritedMembers = Config_getBool("INLINE_INHERITED_MEMB");
+  inlineInheritedMembers = true;
   if (!inlineInheritedMembers && countAdditionalInheritedMembers()>0)
   {
     ol.startMemberHeader("inherited");
